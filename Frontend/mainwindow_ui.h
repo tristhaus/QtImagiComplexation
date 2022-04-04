@@ -38,10 +38,12 @@
 QT_BEGIN_NAMESPACE
 
 class MainWindow;
+class FrontendTest;
 
 class Ui_MainWindow
 {
     friend MainWindow;
+    friend FrontendTest;
 
     Q_DECLARE_TR_FUNCTIONS(Ui_MainWindow)
 
@@ -60,7 +62,7 @@ private:
     QLineEdit * funcLineEdit{};
     QPushButton *funcSetButton{};
     QPushButton *funcClearButton{};
-    QPushButton *funcAboutButton{};
+    QPushButton *aboutButton{};
 
     QCustomPlot * plot{};
 
@@ -107,9 +109,9 @@ public:
         funcClearButton->setObjectName(QString::fromUtf8("funcClearButton"));
         functionLayout->addWidget(funcClearButton);
 
-        funcAboutButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
-        funcAboutButton->setObjectName(QString::fromUtf8("funcAboutButton"));
-        functionLayout->addWidget(funcAboutButton);
+        aboutButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        aboutButton->setObjectName(QString::fromUtf8("funcAboutButton"));
+        functionLayout->addWidget(aboutButton);
 
         mainLayout->addWidget(functionFrame);
 
@@ -129,7 +131,7 @@ public:
         funcLabel->setText(QCoreApplication::translate("MainWindow", "f(z) =", nullptr));
         funcSetButton->setText(QCoreApplication::translate("MainWindow", "Set", nullptr));
         funcClearButton->setText(QCoreApplication::translate("MainWindow", "Clear", nullptr));
-        funcAboutButton->setText(QCoreApplication::translate("MainWindow", "About ... ", nullptr));
+        aboutButton->setText(QCoreApplication::translate("MainWindow", "About ... ", nullptr));
     } // retranslateUi
 
 };

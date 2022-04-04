@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->plot, &QCustomPlot::mousePress, this, &MainWindow::OnPlotClick);
     connect(ui->funcClearButton, &QAbstractButton::pressed, this, &MainWindow::OnClearPressed);
-    connect(ui->funcAboutButton, &QAbstractButton::pressed, this, &MainWindow::OnAboutPressed);
+    connect(ui->aboutButton, &QAbstractButton::pressed, this, &MainWindow::OnAboutPressed);
 }
 
 MainWindow::~MainWindow()
