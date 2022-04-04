@@ -16,9 +16,13 @@
 #
 #
 
-TEMPLATE = subdirs
+INCLUDEPATH += $$PWD\..\Include
 
-SUBDIRS += \
-    QtImagiComplexation \
-    MainWindowTest \
-    BackendTest
+HEADERS += \
+    $$PWD/expression.h \
+    $$PWD/basez.h \
+    $$PWD/constant.h
+
+SOURCES += \
+    $$PWD/basez.cpp \
+    $$PWD/constant.cpp
