@@ -32,6 +32,7 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -48,63 +49,74 @@ protected:
 
 private:
 
-    QWidget *centralwidget{};
-    QHBoxLayout *centralLayout{};
+    QWidget * centralwidget{};
+    QVBoxLayout * mainLayout{};
 
-    QLabel *helloWorldLabel{};
+    QFrame * functionFrame{};
+    QHBoxLayout * functionLayout{};
+
+    QLineEdit * funcLineEdit{};
+    QPushButton *funcSetButton{};
+    QPushButton *funcClearButton{};
+
+    QCustomPlot * plot{};
 
 public:
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
         {
-            MainWindow->setObjectName(QString::fromUtf8(u8"MainWindow"));
+            MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         }
-
-        MainWindow->resize(1200, 800); //NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-
-        QSizePolicy sizePolicyExpExp(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        sizePolicyExpExp.setHorizontalStretch(0);
-        sizePolicyExpExp.setVerticalStretch(0);
-
-        QSizePolicy sizePolicyPreFix(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        sizePolicyPreFix.setHorizontalStretch(0);
-        sizePolicyPreFix.setVerticalStretch(0);
-
-        QSizePolicy sizePolicyFixPre(QSizePolicy::Fixed, QSizePolicy::Preferred);
-        sizePolicyFixPre.setHorizontalStretch(0);
-        sizePolicyFixPre.setVerticalStretch(0);
-
-        QSizePolicy sizePolicyFixFix(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicyFixFix.setHorizontalStretch(0);
-        sizePolicyFixFix.setVerticalStretch(0);
-
-        QSizePolicy sizePolicyMinMin(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicyMinMin.setHorizontalStretch(0);
-        sizePolicyMinMin.setVerticalStretch(0);
-
+        MainWindow->resize(600, 821);
         centralwidget = new QWidget(MainWindow); //NOLINT(cppcoreguidelines-owning-memory
-        centralwidget->setObjectName(QString::fromUtf8(u8"centralwidget"));
-        sizePolicyExpExp.setHeightForWidth(centralwidget->sizePolicy().hasHeightForWidth());
-        centralwidget->setSizePolicy(sizePolicyExpExp);
+        centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
+        mainLayout = new QVBoxLayout(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
+        mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
 
-        centralLayout = new QHBoxLayout(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
-        centralLayout->setObjectName(QString::fromUtf8(u8"centralLayout"));
+        functionFrame = new QFrame(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
+        functionFrame->setObjectName(QString::fromUtf8("functionFrame"));
+        functionFrame->setFrameShape(QFrame::StyledPanel);
+        functionFrame->setFrameShadow(QFrame::Raised);
 
-        helloWorldLabel = new QLabel(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
-        helloWorldLabel->setObjectName(QString::fromUtf8(u8"helloWorldLabel"));
-        centralLayout->addWidget(helloWorldLabel);
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(functionFrame->sizePolicy().hasHeightForWidth());
+        functionFrame->setSizePolicy(sizePolicy);
+
+        functionLayout = new QHBoxLayout(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        functionLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+
+        funcLineEdit = new QLineEdit(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        funcLineEdit->setObjectName(QString::fromUtf8("funcLineEdit"));
+        functionLayout->addWidget(funcLineEdit);
+
+        funcSetButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        funcSetButton->setObjectName(QString::fromUtf8("funcSetButton"));
+        functionLayout->addWidget(funcSetButton);
+
+        funcClearButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        funcClearButton->setObjectName(QString::fromUtf8("funcClearButton"));
+        functionLayout->addWidget(funcClearButton);
+
+        mainLayout->addWidget(functionFrame);
+
+        plot = new QCustomPlot(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
+        plot->setObjectName(QString::fromUtf8("plot"));
+
+        mainLayout->addWidget(plot);
+
+        MainWindow->setCentralWidget(centralwidget);
 
         retranslateUi(MainWindow);
-
-        QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", u8"QtImagiComplexation", nullptr));
-
-        helloWorldLabel->setText(QCoreApplication::translate("MainWindow", u8"Hello World!", nullptr));
+        funcSetButton->setText(QCoreApplication::translate("MainWindow", u8"Set", nullptr));
+        funcClearButton->setText(QCoreApplication::translate("MainWindow", u8"Clear", nullptr));
     } // retranslateUi
 
 };
