@@ -55,6 +55,7 @@ private:
     QFrame * functionFrame{};
     QHBoxLayout * functionLayout{};
 
+    QLabel * funcLabel{};
     QLineEdit * funcLineEdit{};
     QPushButton *funcSetButton{};
     QPushButton *funcClearButton{};
@@ -88,6 +89,10 @@ public:
         functionLayout = new QHBoxLayout(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
         functionLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
 
+        funcLabel = new QLabel(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        funcLabel->setObjectName(QString::fromUtf8("funcLabel"));
+        functionLayout->addWidget(funcLabel);
+
         funcLineEdit = new QLineEdit(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
         funcLineEdit->setObjectName(QString::fromUtf8("funcLineEdit"));
         functionLayout->addWidget(funcLineEdit);
@@ -115,6 +120,7 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", u8"QtImagiComplexation", nullptr));
+        funcLabel->setText(QCoreApplication::translate("MainWindow", u8"f(z) =", nullptr));
         funcSetButton->setText(QCoreApplication::translate("MainWindow", u8"Set", nullptr));
         funcClearButton->setText(QCoreApplication::translate("MainWindow", u8"Clear", nullptr));
     } // retranslateUi

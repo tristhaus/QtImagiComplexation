@@ -28,7 +28,16 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->plot->xAxis->setRange(-10.0, 10.0);
+    ui->plot->yAxis->setRange(-10.0, 10.0);
+    ui->plot->replot();
+
+    ui->funcLineEdit->setText(QString::fromUtf8("z * i"));
+    ui->funcLineEdit->setDisabled(true);
+    ui->funcSetButton->setDisabled(true);
+
     connect(ui->plot, &QCustomPlot::mousePress, this, &MainWindow::OnPlotClick);
+    connect(ui->funcClearButton, &QAbstractButton::pressed, this, &MainWindow::OnClearPressed);
 }
 
 MainWindow::~MainWindow()
@@ -46,15 +55,17 @@ void MainWindow::OnPlotClick(QMouseEvent * event)
     double xCoord = plot->xAxis->pixelToCoord(event->pos().x());
     double yCoord = plot->yAxis->pixelToCoord(event->pos().y());
 
-    QVector<double> x, y;
-    x.append(0.0);
-    x.append(xCoord);
-    y.append(0.0);
-    y.append(yCoord);
-
-    auto * qcpGraph = plot->addGraph();
-    qcpGraph->addData(x, y, true);
-    qcpGraph->setPen(pen);
+    QCPItemLine *arrow = new QCPItemLine(plot); //NOLINT(cppcoreguidelines-owning-memory
+    arrow->setHead(QCPLineEnding::esSpikeArrow);
+    arrow->start->setCoords(xCoord, yCoord);
+    arrow->end->setCoords(-yCoord, xCoord);
+    arrow->setPen(pen);
 
     plot->replot();
+}
+
+void MainWindow::OnClearPressed()
+{
+    ui->plot->clearItems();
+    ui->plot->replot();
 }

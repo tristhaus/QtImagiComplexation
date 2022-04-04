@@ -39,6 +39,7 @@ public:
 
 private slots:
     void OnPlotClick(QMouseEvent * event);
+    void OnClearPressed();
 };
 
 #endif // MAINWINDOW_H
