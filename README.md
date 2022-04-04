@@ -24,6 +24,8 @@ All source code licensed under GPL v3 (see LICENSE for terms).
 
 Graphical user interface built using [Qt](https://doc.qt.io/).
 
+Icon (letters and arrow) by tristhaus.
+
 [QCustomPlot](https://www.qcustomplot.com/) library (Version 2.1.0) by Emanuel Eichhammer used under the [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html).
 
 GoogleTest used under the following conditions:
