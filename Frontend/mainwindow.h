@@ -30,7 +30,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow //NOLINT (cppcoreguidelines-special-member-functions)
+class MainWindow : public QMainWindow //NOLINT(cppcoreguidelines-special-member-functions)
 {
     friend FrontendTest;
 
@@ -58,8 +58,9 @@ private slots:
     void OnAboutPressed();
 
 private:
+    QColor GenerateColor() const;
+    void AddArrow(double xCoord, double yCoord);
     void ShowAboutDialog();
-    QColor GenerateColor();
 };
 
 #endif // MAINWINDOW_H

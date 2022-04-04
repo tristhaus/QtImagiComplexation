@@ -46,22 +46,27 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::OnPlotClick(QMouseEvent * event)
+void MainWindow::AddArrow(double xCoord, double yCoord)
 {
     auto & plot = ui->plot;
 
     auto pen = QPen(this->GenerateColor());
 
-    double xCoord = plot->xAxis->pixelToCoord(event->pos().x());
-    double yCoord = plot->yAxis->pixelToCoord(event->pos().y());
-
-    QCPItemLine *arrow = new QCPItemLine(plot); //NOLINT(cppcoreguidelines-owning-memory
+    QCPItemLine *arrow = new QCPItemLine(plot); //NOLINT(cppcoreguidelines-owning-memory)
     arrow->setHead(QCPLineEnding::esSpikeArrow);
     arrow->start->setCoords(xCoord, yCoord);
     arrow->end->setCoords(-yCoord, xCoord);
     arrow->setPen(pen);
 
     plot->replot();
+}
+
+void MainWindow::OnPlotClick(QMouseEvent * event)
+{
+    double inputX = ui->plot->xAxis->pixelToCoord(event->pos().x());
+    double inputY = ui->plot->yAxis->pixelToCoord(event->pos().y());
+
+    this->AddArrow(inputX, inputY);
 }
 
 void MainWindow::OnClearPressed()
@@ -97,7 +102,7 @@ void MainWindow::ShowAboutDialog()
     this->aboutMessageBox.reset();
 }
 
-QColor MainWindow::GenerateColor()
+QColor MainWindow::GenerateColor() const
 {
     static std::random_device rd;
     static std::mt19937 gen(rd());

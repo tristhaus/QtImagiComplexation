@@ -74,12 +74,12 @@ public:
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         }
         MainWindow->resize(600, 621);
-        centralwidget = new QWidget(MainWindow); //NOLINT(cppcoreguidelines-owning-memory
+        centralwidget = new QWidget(MainWindow); //NOLINT(cppcoreguidelines-owning-memory)
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        mainLayout = new QVBoxLayout(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
+        mainLayout = new QVBoxLayout(centralwidget); //NOLINT(cppcoreguidelines-owning-memory)
         mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
 
-        functionFrame = new QFrame(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
+        functionFrame = new QFrame(centralwidget); //NOLINT(cppcoreguidelines-owning-memory)
         functionFrame->setObjectName(QString::fromUtf8("functionFrame"));
         functionFrame->setFrameShape(QFrame::StyledPanel);
         functionFrame->setFrameShadow(QFrame::Raised);
@@ -90,32 +90,32 @@ public:
         sizePolicy.setHeightForWidth(functionFrame->sizePolicy().hasHeightForWidth());
         functionFrame->setSizePolicy(sizePolicy);
 
-        functionLayout = new QHBoxLayout(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        functionLayout = new QHBoxLayout(functionFrame); //NOLINT(cppcoreguidelines-owning-memory)
         functionLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
 
-        funcLabel = new QLabel(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        funcLabel = new QLabel(functionFrame); //NOLINT(cppcoreguidelines-owning-memory)
         funcLabel->setObjectName(QString::fromUtf8("funcLabel"));
         functionLayout->addWidget(funcLabel);
 
-        funcLineEdit = new QLineEdit(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        funcLineEdit = new QLineEdit(functionFrame); //NOLINT(cppcoreguidelines-owning-memory)
         funcLineEdit->setObjectName(QString::fromUtf8("funcLineEdit"));
         functionLayout->addWidget(funcLineEdit);
 
-        funcSetButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        funcSetButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory)
         funcSetButton->setObjectName(QString::fromUtf8("funcSetButton"));
         functionLayout->addWidget(funcSetButton);
 
-        funcClearButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        funcClearButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory)
         funcClearButton->setObjectName(QString::fromUtf8("funcClearButton"));
         functionLayout->addWidget(funcClearButton);
 
-        aboutButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        aboutButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory)
         aboutButton->setObjectName(QString::fromUtf8("funcAboutButton"));
         functionLayout->addWidget(aboutButton);
 
         mainLayout->addWidget(functionFrame);
 
-        plot = new QCustomPlot(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
+        plot = new QCustomPlot(centralwidget); //NOLINT(cppcoreguidelines-owning-memory)
         plot->setObjectName(QString::fromUtf8("plot"));
 
         mainLayout->addWidget(plot);

@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    a.installTranslator(&translator);
+    QApplication::installTranslator(&translator);
 
     MainWindow w;
     w.show();

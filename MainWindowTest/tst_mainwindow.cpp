@@ -39,16 +39,18 @@ public:
     FrontendTest();
 
 private slots:
-    void ConstructionShallWorkCompletely() const;
+    static void ConstructionShallWorkCompletely() ;
 #ifdef _USE_LONG_TEST
     void AboutButtonShallTriggerDialogAndOKShallClose();
+    static void ClickingPlotShallAddArrow();
+    static void ClearButtonShallClearGraph();
 #endif // _USE_LONG_TEST
 };
 
 FrontendTest::FrontendTest()
 = default;
 
-void FrontendTest::ConstructionShallWorkCompletely() const//NOLINT(google-readability-function-size, hicpp-function-size, readability-function-size)
+void FrontendTest::ConstructionShallWorkCompletely() //NOLINT(google-readability-function-size, hicpp-function-size, readability-function-size)
 {
     try
     {
@@ -109,6 +111,44 @@ void FrontendTest::AboutButtonShallTriggerDialogAndOKShallClose()
     QVERIFY2(aboutMessageBoxHasOneButton, qPrintable(QString::fromUtf8(u8"aboutMessageBox does not have exactly one button")));
 
     QVERIFY2(mw.aboutMessageBox == nullptr, qPrintable(QString::fromUtf8(u8"aboutMessageBox still reachable")));
+}
+
+void FrontendTest::ClickingPlotShallAddArrow()
+{
+    // Arrange
+    MainWindow mw;
+
+    bool graphHasNoItems = mw.ui->plot->itemCount() == 0;
+
+    // Act
+    QTest::mouseClick(mw.ui->plot, Qt::LeftButton);
+
+    bool graphHasOneItem = mw.ui->plot->itemCount() == 1;
+
+    // Assert
+    QVERIFY2(graphHasNoItems, qPrintable(QString::fromUtf8(u8"initially no arrow found")));
+    QVERIFY2(graphHasOneItem, qPrintable(QString::fromUtf8(u8"no arrow present after click")));
+}
+
+void FrontendTest::ClearButtonShallClearGraph()
+{
+    // Arrange
+    MainWindow mw;
+    mw.AddArrow(1.0, 1.0);
+
+    bool graphHasItems = mw.ui->plot->itemCount() > 0;
+
+    //// spy needed such that events actually happen
+    //QSignalSpy spyFuncClearButton(mw.ui->funcClearButton, &QAbstractButton::pressed);
+
+    // Act
+    QTest::mouseClick(mw.ui->funcClearButton, Qt::LeftButton);
+
+    bool graphHasNoMoreItems = mw.ui->plot->itemCount() == 0;
+
+    // Assert
+    QVERIFY2(graphHasItems, qPrintable(QString::fromUtf8(u8"initial arrow not found")));
+    QVERIFY2(graphHasNoMoreItems, qPrintable(QString::fromUtf8(u8"arrow present after clear")));
 }
 
 #endif // _USE_LONG_TEST
