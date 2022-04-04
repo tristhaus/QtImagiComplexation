@@ -23,6 +23,8 @@
 #include "tst_constant.h"
 #include "tst_equality.h"
 #include "tst_fundamental.h"
+#include "tst_product.h"
+#include "tst_sum.h"
 
 int main(int argc, char *argv[])
 {

@@ -33,7 +33,9 @@ HEADERS += \
         tst_complexmatcher.h \
         tst_constant.h \
         tst_fundamental.h \
-        tst_equality.h
+        tst_equality.h \
+        tst_product.h \
+        tst_sum.h
 
 SOURCES += \
         main.cpp

@@ -21,8 +21,12 @@ INCLUDEPATH += $$PWD\..\Include
 HEADERS += \
     $$PWD/expression.h \
     $$PWD/basez.h \
-    $$PWD/constant.h
+    $$PWD/constant.h \
+    $$PWD/product.h \
+    $$PWD/sum.h
 
 SOURCES += \
     $$PWD/basez.cpp \
-    $$PWD/constant.cpp
+    $$PWD/constant.cpp \
+    $$PWD/product.cpp \
+    $$PWD/sum.cpp
