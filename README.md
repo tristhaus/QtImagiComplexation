@@ -2,6 +2,8 @@
 
 Copyright tristhaus 2022 and later.
 
+![main](/../screenshot/screenshot.png?raw=true)
+
 A program to interactively plot a vector field representation of functions in the complex domain.
 
 ## For Users
@@ -10,7 +12,7 @@ This is alpha status.
 
 ## For Developers
 
-I am currently not looking for contributors since this is primarily a custom, private program.
+I am currently not looking for contributors since this is primarily my hobby.
 
 `clang-tidy` has been added, be sure to configure QtCreator to use the [.clang-tidy](.clang-tidy) file.
 
