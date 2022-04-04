@@ -27,9 +27,34 @@ MainWindow::MainWindow(QWidget *parent)
       ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    connect(ui->plot, &QCustomPlot::mousePress, this, &MainWindow::OnPlotClick);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::OnPlotClick(QMouseEvent * event)
+{
+    QColor black = QColor(0x00, 0x00, 0x00);
+    auto pen = QPen(black);
+
+    auto & plot = ui->plot;
+
+    double xCoord = plot->xAxis->pixelToCoord(event->pos().x());
+    double yCoord = plot->yAxis->pixelToCoord(event->pos().y());
+
+    QVector<double> x, y;
+    x.append(0.0);
+    x.append(xCoord);
+    y.append(0.0);
+    y.append(yCoord);
+
+    auto * qcpGraph = plot->addGraph();
+    qcpGraph->addData(x, y, true);
+    qcpGraph->setPen(pen);
+
+    plot->replot();
 }

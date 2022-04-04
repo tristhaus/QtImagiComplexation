@@ -36,6 +36,9 @@ private:
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
+
+private slots:
+    void OnPlotClick(QMouseEvent * event);
 };
 
 #endif // MAINWINDOW_H
