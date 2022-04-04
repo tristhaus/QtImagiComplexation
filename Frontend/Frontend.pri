@@ -17,10 +17,12 @@
 #
 
 SOURCES += \
-    $$PWD/mainwindow.cpp 
+    $$PWD/mainwindow.cpp \
+    $$PWD/qcustomplot.cpp
 
 HEADERS += \
     $$PWD/mainwindow.h \
-    $$PWD/mainwindow_ui.h 
+    $$PWD/mainwindow_ui.h \
+    $$PWD/qcustomplot.h
 
 FORMS +=
