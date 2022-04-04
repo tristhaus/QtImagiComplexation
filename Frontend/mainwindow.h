@@ -22,6 +22,8 @@
 #include <QMainWindow>
 #include <QMessageBox>
 
+#include <memory>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -31,7 +33,16 @@ class MainWindow : public QMainWindow //NOLINT (cppcoreguidelines-special-member
     Q_OBJECT
 
 private:
-    Ui::MainWindow *ui;
+    const double viewport = 10.0;
+    const int minHue = 0;
+    const int maxHue = 359;
+    const int minSaturation = 150;
+    const int maxSaturation = 255;
+    const int minValue = 180;
+    const int maxValue = 240;
+
+    Ui::MainWindow * ui;
+    std::unique_ptr<QMessageBox> aboutMessageBox;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -40,8 +51,10 @@ public:
 private slots:
     void OnPlotClick(QMouseEvent * event);
     void OnClearPressed();
+    void OnAboutPressed();
 
 private:
+    void ShowAboutDialog();
     QColor GenerateColor();
 };
 

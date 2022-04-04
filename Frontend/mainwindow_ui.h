@@ -19,6 +19,8 @@
 #ifndef UI_MAINWINDOW_H
 #define UI_MAINWINDOW_H
 
+#include "qcustomplot.h"
+
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGridLayout>
@@ -32,7 +34,6 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -43,9 +44,7 @@ class Ui_MainWindow
     friend MainWindow;
 
 protected:
-    explicit Ui_MainWindow() //NOLINT(cppcoreguidelines-pro-type-member-init)
-    {
-    }
+    explicit Ui_MainWindow() = default; //NOLINT(cppcoreguidelines-pro-type-member-init)
 
 private:
 
@@ -59,6 +58,7 @@ private:
     QLineEdit * funcLineEdit{};
     QPushButton *funcSetButton{};
     QPushButton *funcClearButton{};
+    QPushButton *funcAboutButton{};
 
     QCustomPlot * plot{};
 
@@ -69,7 +69,7 @@ public:
         {
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         }
-        MainWindow->resize(600, 821);
+        MainWindow->resize(600, 621);
         centralwidget = new QWidget(MainWindow); //NOLINT(cppcoreguidelines-owning-memory
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         mainLayout = new QVBoxLayout(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
@@ -105,6 +105,10 @@ public:
         funcClearButton->setObjectName(QString::fromUtf8("funcClearButton"));
         functionLayout->addWidget(funcClearButton);
 
+        funcAboutButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory
+        funcAboutButton->setObjectName(QString::fromUtf8("funcAboutButton"));
+        functionLayout->addWidget(funcAboutButton);
+
         mainLayout->addWidget(functionFrame);
 
         plot = new QCustomPlot(centralwidget); //NOLINT(cppcoreguidelines-owning-memory
@@ -123,6 +127,7 @@ public:
         funcLabel->setText(QCoreApplication::translate("MainWindow", u8"f(z) =", nullptr));
         funcSetButton->setText(QCoreApplication::translate("MainWindow", u8"Set", nullptr));
         funcClearButton->setText(QCoreApplication::translate("MainWindow", u8"Clear", nullptr));
+        funcAboutButton->setText(QCoreApplication::translate("MainWindow", u8"About ... ", nullptr));
     } // retranslateUi
 
 };
@@ -131,9 +136,7 @@ namespace Ui {
     class MainWindow: public Ui_MainWindow
     {
     public:
-        explicit MainWindow()
-        {
-        }
+        explicit MainWindow() = default;
     };
 } // namespace Ui
 
