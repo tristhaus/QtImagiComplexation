@@ -22,13 +22,11 @@
 #include <QMessageBox>
 #include <utility>
 
-#include "../Backend/basez.h"
-#include "../Backend/constant.h"
-#include "../Backend/product.h"
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-      ui(new Ui::MainWindow)
+      plotting(false),
+      ui(new Ui::MainWindow),
+      parser(Backend::Parser(false))
 {
     ui->setupUi(this);
 
@@ -37,12 +35,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->plot->replot();
 
     ui->funcLineEdit->setText(QString::fromUtf8(u8"z * i"));
-    ui->funcLineEdit->setDisabled(true);
-    ui->funcSetButton->setDisabled(true);
-
-    this->SetupDefaultExpression();
+    this->UpdateUiState();
 
     connect(ui->plot, &QCustomPlot::mousePress, this, &MainWindow::OnPlotClick);
+    connect(ui->funcSetButton, &QAbstractButton::pressed, this, &MainWindow::OnSetPressed);
     connect(ui->funcClearButton, &QAbstractButton::pressed, this, &MainWindow::OnClearPressed);
     connect(ui->aboutButton, &QAbstractButton::pressed, this, &MainWindow::OnAboutPressed);
 }
@@ -50,16 +46,6 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::SetupDefaultExpression()
-{
-    using namespace std::complex_literals;
-
-    // z * i
-    auto z = std::make_shared<Backend::BaseZ>();
-    auto constant = std::make_shared<Backend::Constant>(1.0i);
-    this->expression = std::make_unique<Backend::Product>(std::vector<Backend::Product::Factor> {Backend::Product::Factor(Backend::Product::Exponent::Positive, z), Backend::Product::Factor(Backend::Product::Exponent::Positive, constant)});
 }
 
 void MainWindow::AddArrow(double startX, double startY, double endX, double endY)
@@ -79,12 +65,17 @@ void MainWindow::AddArrow(double startX, double startY, double endX, double endY
 
 void MainWindow::OnPlotClick(QMouseEvent * event)
 {
+    if (!this->plotting)
+    {
+        return;
+    }
+
     double inputX = ui->plot->xAxis->pixelToCoord(event->pos().x());
     double inputY = ui->plot->yAxis->pixelToCoord(event->pos().y());
 
     auto result = this->expression->Evaluate(Backend::complex(inputX, inputY));
 
-    if(!result.has_value())
+    if (!result.has_value())
     {
         return;
     }
@@ -92,10 +83,14 @@ void MainWindow::OnPlotClick(QMouseEvent * event)
     this->AddArrow(inputX, inputY, result.value().real(), result.value().imag());
 }
 
+void MainWindow::OnSetPressed()
+{
+    this->UpdateExpression();
+}
+
 void MainWindow::OnClearPressed()
 {
-    ui->plot->clearItems();
-    ui->plot->replot();
+    this->ClearPlot();
 }
 
 void MainWindow::OnAboutPressed()
@@ -123,6 +118,36 @@ void MainWindow::ShowAboutDialog()
     this->aboutMessageBox->exec();
 
     this->aboutMessageBox.reset();
+}
+
+void MainWindow::UpdateUiState()
+{
+    ui->funcLineEdit->setDisabled(this->plotting);
+    ui->funcSetButton->setDisabled(this->plotting);
+    ui->funcClearButton->setDisabled(!this->plotting);
+}
+
+void MainWindow::UpdateExpression()
+{
+    auto input = std::string(ui->funcLineEdit->text().toUtf8());
+    if (this->parser.IsParseable(input))
+    {
+        this->expression = this->parser.Parse(input);
+
+        this->plotting = true;
+    }
+
+    this->UpdateUiState();
+}
+
+void MainWindow::ClearPlot()
+{
+    ui->plot->clearItems();
+    ui->plot->replot();
+    this->expression.reset();
+    this->plotting = false;
+
+    this->UpdateUiState();
 }
 
 QColor MainWindow::GenerateColor() const

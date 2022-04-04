@@ -123,9 +123,12 @@ void FrontendTest::ClickingPlotShallAddArrowWhenPossible()
     // Arrange
     MainWindow mw;
 
+    mw.ui->funcLineEdit->setText(QString::fromUtf8(u8"z * i"));
+
     bool graphHasNoItems = mw.ui->plot->itemCount() == 0;
 
     // Act
+    QTest::mouseClick(mw.ui->funcSetButton, Qt::LeftButton);
     QTest::mouseClick(mw.ui->plot, Qt::LeftButton);
 
     bool graphHasOneItem = mw.ui->plot->itemCount() == 1;
@@ -140,14 +143,12 @@ void FrontendTest::ClickingPlotShallNotAddArrowWhenImpossible()
     // Arrange
     MainWindow mw;
 
-    // 1 / 0
-    auto c1 = std::make_shared<Backend::Constant>(1.0);
-    auto c2 = std::make_shared<Backend::Constant>(0.0);
-    mw.expression = std::make_unique<Backend::Product>(std::vector<Backend::Product::Factor> {Backend::Product::Factor(Backend::Product::Exponent::Positive, c1), Backend::Product::Factor(Backend::Product::Exponent::Negative, c2)});
+    mw.ui->funcLineEdit->setText(QString::fromUtf8(u8"1.0 / 0.0"));
 
     bool graphHasNoItems = mw.ui->plot->itemCount() == 0;
 
     // Act
+    QTest::mouseClick(mw.ui->funcSetButton, Qt::LeftButton);
     QTest::mouseClick(mw.ui->plot, Qt::LeftButton);
 
     bool graphHasOneItem = mw.ui->plot->itemCount() == 0;
@@ -161,12 +162,13 @@ void FrontendTest::ClearButtonShallClearGraph()
 {
     // Arrange
     MainWindow mw;
-    mw.AddArrow(1.0, 1.0, 2.0, 2.0); //NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+
+    mw.ui->funcLineEdit->setText(QString::fromUtf8(u8"z * i"));
+
+    QTest::mouseClick(mw.ui->funcSetButton, Qt::LeftButton);
+    QTest::mouseClick(mw.ui->plot, Qt::LeftButton);
 
     bool graphHasItems = mw.ui->plot->itemCount() > 0;
-
-    //// spy needed such that events actually happen
-    //QSignalSpy spyFuncClearButton(mw.ui->funcClearButton, &QAbstractButton::pressed);
 
     // Act
     QTest::mouseClick(mw.ui->funcClearButton, Qt::LeftButton);

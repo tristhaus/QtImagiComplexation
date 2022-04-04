@@ -25,6 +25,7 @@
 #include <memory>
 
 #include "../Backend/expression.h"
+#include "../Backend/parser.h"
 
 class FrontendTest;
 
@@ -47,9 +48,11 @@ private:
     const int minValue = 180;
     const int maxValue = 240;
 
+    bool plotting;
     Ui::MainWindow * ui;
+    Backend::Parser parser;
     std::unique_ptr<QMessageBox> aboutMessageBox;
-    std::unique_ptr<Backend::Expression> expression;
+    std::shared_ptr<Backend::Expression> expression;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -57,11 +60,14 @@ public:
 
 private slots:
     void OnPlotClick(QMouseEvent * event);
+    void OnSetPressed();
     void OnClearPressed();
     void OnAboutPressed();
 
 private:
-    void SetupDefaultExpression();
+    void UpdateUiState();
+    void UpdateExpression();
+    void ClearPlot();
     [[nodiscard]] QColor GenerateColor() const;
     void AddArrow(double startX, double startY, double endX, double endY);
     void ShowAboutDialog();
