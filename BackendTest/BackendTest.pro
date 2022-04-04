@@ -29,7 +29,9 @@ CONFIG -= app_bundle
 
 HEADERS += \
         tst_basez.h \
-        tst_constant.h
+        tst_constant.h \
+        tst_fundamental.h \
+        tst_equality.h
 
 SOURCES += \
         main.cpp

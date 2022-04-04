@@ -20,7 +20,7 @@
 
 namespace Backend {
 
-    Constant::Constant(double input) : value(input)
+    Constant::Constant(complex input) : value(input)
     {
     }
 
@@ -34,7 +34,7 @@ namespace Backend {
         return true;
     }
 
-    std::optional<double> Constant::Evaluate(double input) const //NOLINT(misc-unused-parameter)
+    std::optional<complex> Constant::Evaluate(complex) const //NOLINT(misc-unused-parameter, hicpp-named-parameter, readability-named-parameter)
     {
         return this->value;
     }
@@ -43,7 +43,9 @@ namespace Backend {
     {
         if (const auto * b = dynamic_cast<const Constant*>(&other))
         {
-            return b != nullptr && this->value == b->value;
+            return b != nullptr
+                    && this->value.real() == b->value.real()
+                    && this->value.imag() == this->value.imag();
         }
         else
         {

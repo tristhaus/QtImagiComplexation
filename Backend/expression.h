@@ -19,11 +19,14 @@
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 
+#include <complex>
 #include <optional>
 #include <string>
 
 namespace Backend
 {
+    using complex = std::complex<double>;
+
     /*!
      * \class Expression
      * \brief The Expression class forms the base for all mathematical expressions.
@@ -57,7 +60,7 @@ namespace Backend
          * \param input The value to plug in to the expression.
          * \return The evaluated value or nothing if undefined.
          */
-        [[nodiscard]] virtual std::optional<double> Evaluate(double input) const = 0;
+        [[nodiscard]] virtual std::optional<complex> Evaluate(complex input) const = 0;
 
         /*!
          * \brief Equality operator for the expression, checking type and content.

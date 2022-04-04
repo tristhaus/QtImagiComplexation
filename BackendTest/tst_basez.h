@@ -26,19 +26,23 @@
 
 TEST(BackendTest, BaseZShallEvaluateCorrectly)
 {
+    using namespace std::complex_literals;
+
     // Arrange
     Backend::BaseZ z;
 
     // Act
-    auto result1 = z.Evaluate(0.0);
-    auto result2 = z.Evaluate(-4.5);
+    auto result1 = z.Evaluate(0.0+0.0i);
+    auto result2 = z.Evaluate(-4.5-3.1i);
 
     // Assert
     ASSERT_TRUE(result1.has_value());
     ASSERT_TRUE(result2.has_value());
 
-    EXPECT_DOUBLE_EQ(0.0, result1.value());
-    EXPECT_DOUBLE_EQ(-4.5, result2.value());
+    EXPECT_DOUBLE_EQ(0.0, result1.value().real());
+    EXPECT_DOUBLE_EQ(0.0, result1.value().imag());
+    EXPECT_DOUBLE_EQ(-4.5, result2.value().real());
+    EXPECT_DOUBLE_EQ(-3.1, result2.value().imag());
 }
 
 #endif // TST_BASEX_H

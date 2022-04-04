@@ -53,7 +53,7 @@ namespace Backend {
         /*!
          * \reimp
          */
-        [[nodiscard]] std::optional<double> Evaluate(double input) const override;
+        [[nodiscard]] std::optional<complex> Evaluate(complex input) const override;
 
         /*!
          * \reimp

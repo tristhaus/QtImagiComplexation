@@ -30,7 +30,7 @@ namespace Backend {
         return true;
     }
 
-    std::optional<double> BaseZ::Evaluate(double input) const
+    std::optional<complex> BaseZ::Evaluate(complex input) const
     {
         return input;
     }

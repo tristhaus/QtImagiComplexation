@@ -25,19 +25,19 @@ namespace Backend {
 
     /*!
      * \class Constant
-     * \brief The Constant class represents a constant real number.
+     * \brief The Constant class represents a constant complex number.
      */
     class Constant final : public Expression
     {
     private:
-        double value;
+        complex value;
 
     public:
         /*!
          * \brief Initializes a new instance holding the supplied value.
          * \param input The value to hold as a constant.
          */
-        explicit Constant(double input);
+        explicit Constant(complex input);
         virtual ~Constant() = default;
         Constant(const Constant&) = delete;
         Constant(Constant&&) = delete;
@@ -57,7 +57,7 @@ namespace Backend {
         /*!
          * \reimp
          */
-        [[nodiscard]] std::optional<double> Evaluate(double input) const override;
+        [[nodiscard]] std::optional<complex> Evaluate(complex) const override;
 
         /*!
          * \reimp

@@ -16,33 +16,18 @@
  *
  */
 
-#ifndef TST_CONSTANT_H
-#define TST_CONSTANT_H
+#ifndef TST_FUNDAMENTAL_H
+#define TST_FUNDAMENTAL_H
+
+#include <cmath>
 
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
 
-#include "../Backend/constant.h"
-
-TEST(BackendTest, ConstantShallEvaluateCorrectly)
+TEST(BackendTest, AssumedMathErrorHandlingShallBeInPlace)
 {
-    using namespace std::complex_literals;
-
-    // Arrange
-    Backend::Constant c(1.0+2.0i);
-
-    // Act
-    auto result1 = c.Evaluate(0.0+0.0i);
-    auto result2 = c.Evaluate(-4.3-3.1i);
-
     // Assert
-    ASSERT_TRUE(result1.has_value());
-    ASSERT_TRUE(result2.has_value());
-
-    EXPECT_DOUBLE_EQ(1.0, result1.value().real());
-    EXPECT_DOUBLE_EQ(2.0, result1.value().imag());
-    EXPECT_DOUBLE_EQ(1.0, result2.value().real());
-    EXPECT_DOUBLE_EQ(2.0, result2.value().imag());
+    ASSERT_TRUE(math_errhandling & MATH_ERREXCEPT);
 }
 
-#endif // TST_CONSTANT_H
+#endif // TST_FUNDAMENTAL_H

@@ -20,6 +20,8 @@
 
 #include "tst_basez.h"
 #include "tst_constant.h"
+#include "tst_equality.h"
+#include "tst_fundamental.h"
 
 int main(int argc, char *argv[])
 {
