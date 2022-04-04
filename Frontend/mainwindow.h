@@ -24,6 +24,8 @@
 
 #include <memory>
 
+#include "../Backend/expression.h"
+
 class FrontendTest;
 
 QT_BEGIN_NAMESPACE
@@ -47,6 +49,7 @@ private:
 
     Ui::MainWindow * ui;
     std::unique_ptr<QMessageBox> aboutMessageBox;
+    std::unique_ptr<Backend::Expression> expression;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -58,8 +61,9 @@ private slots:
     void OnAboutPressed();
 
 private:
-    QColor GenerateColor() const;
-    void AddArrow(double xCoord, double yCoord);
+    void SetupDefaultExpression();
+    [[nodiscard]] QColor GenerateColor() const;
+    void AddArrow(double startX, double startY, double endX, double endY);
     void ShowAboutDialog();
 };
 

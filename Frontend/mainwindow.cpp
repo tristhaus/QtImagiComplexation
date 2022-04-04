@@ -22,6 +22,10 @@
 #include <QMessageBox>
 #include <utility>
 
+#include "../Backend/basez.h"
+#include "../Backend/constant.h"
+#include "../Backend/product.h"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow)
@@ -36,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->funcLineEdit->setDisabled(true);
     ui->funcSetButton->setDisabled(true);
 
+    this->SetupDefaultExpression();
+
     connect(ui->plot, &QCustomPlot::mousePress, this, &MainWindow::OnPlotClick);
     connect(ui->funcClearButton, &QAbstractButton::pressed, this, &MainWindow::OnClearPressed);
     connect(ui->aboutButton, &QAbstractButton::pressed, this, &MainWindow::OnAboutPressed);
@@ -46,16 +52,26 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::AddArrow(double xCoord, double yCoord)
+void MainWindow::SetupDefaultExpression()
+{
+    using namespace std::complex_literals;
+
+    // z * i
+    auto z = std::make_shared<Backend::BaseZ>();
+    auto constant = std::make_shared<Backend::Constant>(1.0i);
+    this->expression = std::make_unique<Backend::Product>(std::vector<Backend::Product::Factor> {Backend::Product::Factor(Backend::Product::Exponent::Positive, z), Backend::Product::Factor(Backend::Product::Exponent::Positive, constant)});
+}
+
+void MainWindow::AddArrow(double startX, double startY, double endX, double endY)
 {
     auto & plot = ui->plot;
 
     auto pen = QPen(this->GenerateColor());
 
-    QCPItemLine *arrow = new QCPItemLine(plot); //NOLINT(cppcoreguidelines-owning-memory)
+    auto *arrow = new QCPItemLine(plot); //NOLINT(cppcoreguidelines-owning-memory)
     arrow->setHead(QCPLineEnding::esSpikeArrow);
-    arrow->start->setCoords(xCoord, yCoord);
-    arrow->end->setCoords(-yCoord, xCoord);
+    arrow->start->setCoords(startX, startY);
+    arrow->end->setCoords(endX, endY);
     arrow->setPen(pen);
 
     plot->replot();
@@ -66,7 +82,14 @@ void MainWindow::OnPlotClick(QMouseEvent * event)
     double inputX = ui->plot->xAxis->pixelToCoord(event->pos().x());
     double inputY = ui->plot->yAxis->pixelToCoord(event->pos().y());
 
-    this->AddArrow(inputX, inputY);
+    auto result = this->expression->Evaluate(Backend::complex(inputX, inputY));
+
+    if(!result.has_value())
+    {
+        return;
+    }
+
+    this->AddArrow(inputX, inputY, result.value().real(), result.value().imag());
 }
 
 void MainWindow::OnClearPressed()

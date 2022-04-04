@@ -25,6 +25,10 @@
 #include <QTest>
 #include <QtTest>
 
+#include "../Backend/basez.h"
+#include "../Backend/constant.h"
+#include "../Backend/product.h"
+
 #include "../Frontend/mainwindow.h"
 #include "../Frontend/mainwindow_ui.h"
 
@@ -42,7 +46,8 @@ private slots:
     static void ConstructionShallWorkCompletely() ;
 #ifdef _USE_LONG_TEST
     void AboutButtonShallTriggerDialogAndOKShallClose();
-    static void ClickingPlotShallAddArrow();
+    static void ClickingPlotShallAddArrowWhenPossible();
+    static void ClickingPlotShallNotAddArrowWhenImpossible();
     static void ClearButtonShallClearGraph();
 #endif // _USE_LONG_TEST
 };
@@ -113,7 +118,7 @@ void FrontendTest::AboutButtonShallTriggerDialogAndOKShallClose()
     QVERIFY2(mw.aboutMessageBox == nullptr, qPrintable(QString::fromUtf8(u8"aboutMessageBox still reachable")));
 }
 
-void FrontendTest::ClickingPlotShallAddArrow()
+void FrontendTest::ClickingPlotShallAddArrowWhenPossible()
 {
     // Arrange
     MainWindow mw;
@@ -126,15 +131,37 @@ void FrontendTest::ClickingPlotShallAddArrow()
     bool graphHasOneItem = mw.ui->plot->itemCount() == 1;
 
     // Assert
-    QVERIFY2(graphHasNoItems, qPrintable(QString::fromUtf8(u8"initially no arrow found")));
+    QVERIFY2(graphHasNoItems, qPrintable(QString::fromUtf8(u8"initially arrow found")));
     QVERIFY2(graphHasOneItem, qPrintable(QString::fromUtf8(u8"no arrow present after click")));
+}
+
+void FrontendTest::ClickingPlotShallNotAddArrowWhenImpossible()
+{
+    // Arrange
+    MainWindow mw;
+
+    // 1 / 0
+    auto c1 = std::make_shared<Backend::Constant>(1.0);
+    auto c2 = std::make_shared<Backend::Constant>(0.0);
+    mw.expression = std::make_unique<Backend::Product>(std::vector<Backend::Product::Factor> {Backend::Product::Factor(Backend::Product::Exponent::Positive, c1), Backend::Product::Factor(Backend::Product::Exponent::Negative, c2)});
+
+    bool graphHasNoItems = mw.ui->plot->itemCount() == 0;
+
+    // Act
+    QTest::mouseClick(mw.ui->plot, Qt::LeftButton);
+
+    bool graphHasOneItem = mw.ui->plot->itemCount() == 0;
+
+    // Assert
+    QVERIFY2(graphHasNoItems, qPrintable(QString::fromUtf8(u8"initially arrow found")));
+    QVERIFY2(graphHasOneItem, qPrintable(QString::fromUtf8(u8"arrow present after click")));
 }
 
 void FrontendTest::ClearButtonShallClearGraph()
 {
     // Arrange
     MainWindow mw;
-    mw.AddArrow(1.0, 1.0);
+    mw.AddArrow(1.0, 1.0, 2.0, 2.0); //NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
 
     bool graphHasItems = mw.ui->plot->itemCount() > 0;
 
