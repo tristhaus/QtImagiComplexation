@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->plot->yAxis->setRange(-viewport, viewport);
     ui->plot->replot();
 
-    ui->funcLineEdit->setText(QString::fromUtf8("z * i"));
+    ui->funcLineEdit->setText(QString::fromUtf8(u8"z * i"));
     ui->funcLineEdit->setDisabled(true);
     ui->funcSetButton->setDisabled(true);
 

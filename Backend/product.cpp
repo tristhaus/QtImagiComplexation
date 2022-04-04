@@ -85,7 +85,7 @@ namespace Backend
 
                 break;
             default:
-                throw std::exception("programming mistake in Product switch");
+                throw std::exception(u8"programming mistake in Product switch");
             }
         }
 

@@ -68,7 +68,7 @@ namespace Backend
                 retval -= subResult.value();
                 break;
             default:
-                throw std::exception("programming mistake in Sum switch");
+                throw std::exception(u8"programming mistake in Sum switch");
             }
         }
 
