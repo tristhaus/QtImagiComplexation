@@ -82,7 +82,7 @@ void MainWindow::ShowAboutDialog()
 
     //: Arg 1 is a placeholder for the program name. Format is Qt Rich Text.
     auto messageBoxTextTemplate = QCoreApplication::translate("MainWindow", R"(An interactive vector field visualization for complex functions.<br /><br />%1 Copyright (C) 2022 and later, tristhaus<br />This program comes with ABSOLUTELY NO WARRANTY.<br />This is free software, and you are welcome to redistribute it under certain conditions. See provided LICENSE file for details.<br /><br />Graphical user interface built using <a href="https://doc.qt.io/">Qt</a>.<br /><a href="https://www.qcustomplot.com/">QCustomPlot</a> library (Version 2.1.0) by Emanuel Eichhammer used under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL v3</a>.)", nullptr);
-    auto messageBoxText = messageBoxTextTemplate.arg(QCoreApplication::translate("MainWindow", "QtPollyNom", nullptr));
+    auto messageBoxText = messageBoxTextTemplate.arg(QCoreApplication::translate("MainWindow", "QtImagiComplexation", nullptr));
 
     this->aboutMessageBox = std::make_unique<QMessageBox>(
                     QMessageBox::Icon::NoIcon,

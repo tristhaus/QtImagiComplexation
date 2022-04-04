@@ -43,6 +43,8 @@ class Ui_MainWindow
 {
     friend MainWindow;
 
+    Q_DECLARE_TR_FUNCTIONS(Ui_MainWindow)
+
 protected:
     explicit Ui_MainWindow() = default; //NOLINT(cppcoreguidelines-pro-type-member-init)
 
@@ -123,11 +125,11 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", u8"QtImagiComplexation", nullptr));
-        funcLabel->setText(QCoreApplication::translate("MainWindow", u8"f(z) =", nullptr));
-        funcSetButton->setText(QCoreApplication::translate("MainWindow", u8"Set", nullptr));
-        funcClearButton->setText(QCoreApplication::translate("MainWindow", u8"Clear", nullptr));
-        funcAboutButton->setText(QCoreApplication::translate("MainWindow", u8"About ... ", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "QtImagiComplexation", nullptr));
+        funcLabel->setText(QCoreApplication::translate("MainWindow", "f(z) =", nullptr));
+        funcSetButton->setText(QCoreApplication::translate("MainWindow", "Set", nullptr));
+        funcClearButton->setText(QCoreApplication::translate("MainWindow", "Clear", nullptr));
+        funcAboutButton->setText(QCoreApplication::translate("MainWindow", "About ... ", nullptr));
     } // retranslateUi
 
 };
@@ -135,6 +137,9 @@ public:
 namespace Ui {
     class MainWindow: public Ui_MainWindow
     {
+
+    Q_DECLARE_TR_FUNCTIONS(MainWindow)
+
     public:
         explicit MainWindow() = default;
     };

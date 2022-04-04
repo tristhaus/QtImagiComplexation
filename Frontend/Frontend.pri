@@ -25,4 +25,11 @@ HEADERS += \
     $$PWD/mainwindow_ui.h \
     $$PWD/qcustomplot.h
 
+TRANSLATIONS += \
+    $$PWD/QtImagiComplexation_en.ts \
+    $$PWD/QtImagiComplexation_de.ts
+
+RESOURCES += \
+    $$PWD/translations.qrc
+
 FORMS +=
