@@ -28,7 +28,9 @@ CONFIG += console c++11 thread
 CONFIG -= app_bundle
 
 HEADERS += \
+        ComplexMatcher.h \
         tst_basez.h \
+        tst_complexmatcher.h \
         tst_constant.h \
         tst_fundamental.h \
         tst_equality.h

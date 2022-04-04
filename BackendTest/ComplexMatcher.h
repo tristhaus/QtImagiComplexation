@@ -16,32 +16,26 @@
  *
  */
 
-#ifndef TST_CONSTANT_H
-#define TST_CONSTANT_H
+#ifndef COMPLEXMATCHER_H
+#define COMPLEXMATCHER_H
 
 #include <gmock/gmock-matchers.h>
-#include <gtest/gtest.h>
-#include "ComplexMatcher.h"
 
-#include "../Backend/constant.h"
+#include "../Backend/expression.h"
 
-TEST(BackendTest, ConstantShallEvaluateCorrectly)
-{
-    using namespace std::complex_literals;
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4100)
+#endif
 
-    // Arrange
-    Backend::Constant c(1.0+2.0i);
-
-    // Act
-    auto result1 = c.Evaluate(0.0+0.0i);
-    auto result2 = c.Evaluate(-4.3-3.1i);
-
-    // Assert
-    ASSERT_TRUE(result1.has_value());
-    ASSERT_TRUE(result2.has_value());
-
-    EXPECT_THAT(result1.value(), COMPLEX_NEAR(1.0+2.0i));
-    EXPECT_THAT(result2.value(), COMPLEX_NEAR(1.0+2.0i));
+MATCHER_P(COMPLEX_NEAR, ref, "") {
+    const double epsilon = 1e-6;
+    return std::fabs(arg.real()-ref.real()) < epsilon && std::fabs(arg.imag()-ref.imag()) < epsilon;
 }
 
-#endif // TST_CONSTANT_H
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(default : 4100)
+#endif
+
+#endif // COMPLEXMATCHER_H

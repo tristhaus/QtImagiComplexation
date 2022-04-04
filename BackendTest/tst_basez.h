@@ -21,6 +21,7 @@
 
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
+#include "ComplexMatcher.h"
 
 #include "../Backend/basez.h"
 
@@ -39,10 +40,8 @@ TEST(BackendTest, BaseZShallEvaluateCorrectly)
     ASSERT_TRUE(result1.has_value());
     ASSERT_TRUE(result2.has_value());
 
-    EXPECT_DOUBLE_EQ(0.0, result1.value().real());
-    EXPECT_DOUBLE_EQ(0.0, result1.value().imag());
-    EXPECT_DOUBLE_EQ(-4.5, result2.value().real());
-    EXPECT_DOUBLE_EQ(-3.1, result2.value().imag());
+    EXPECT_THAT(result1.value(), COMPLEX_NEAR(0.0+0.0i));
+    EXPECT_THAT(result2.value(), COMPLEX_NEAR(-4.5-3.1i));
 }
 
 #endif // TST_BASEX_H

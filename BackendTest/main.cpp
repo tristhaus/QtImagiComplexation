@@ -19,6 +19,7 @@
 #include <gtest/gtest.h>
 
 #include "tst_basez.h"
+#include "tst_complexmatcher.h"
 #include "tst_constant.h"
 #include "tst_equality.h"
 #include "tst_fundamental.h"
