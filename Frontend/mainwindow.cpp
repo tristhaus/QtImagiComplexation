@@ -47,10 +47,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::OnPlotClick(QMouseEvent * event)
 {
-    QColor black = QColor(0x00, 0x00, 0x00);
-    auto pen = QPen(black);
-
     auto & plot = ui->plot;
+
+    auto pen = QPen(this->GenerateColor());
 
     double xCoord = plot->xAxis->pixelToCoord(event->pos().x());
     double yCoord = plot->yAxis->pixelToCoord(event->pos().y());
@@ -68,4 +67,15 @@ void MainWindow::OnClearPressed()
 {
     ui->plot->clearItems();
     ui->plot->replot();
+}
+
+QColor MainWindow::GenerateColor()
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_int_distribution<unsigned int> distHue(0, 360);
+    static std::uniform_int_distribution<unsigned int> distSaturation(150, 255);
+    static std::uniform_int_distribution<unsigned int> distValue(180, 240);
+
+    return QColor::fromHsv(distHue(gen), distSaturation(gen), distValue(gen));
 }

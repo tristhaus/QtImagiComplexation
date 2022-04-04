@@ -40,6 +40,9 @@ public:
 private slots:
     void OnPlotClick(QMouseEvent * event);
     void OnClearPressed();
+
+private:
+    QColor GenerateColor();
 };
 
 #endif // MAINWINDOW_H
