@@ -46,6 +46,7 @@ private slots:
     static void ConstructionShallWorkCompletely() ;
 #ifdef _USE_LONG_TEST
     void AboutButtonShallTriggerDialogAndOKShallClose();
+    static void WindowShallBeStateful();
     static void ClickingPlotShallAddArrowWhenPossible();
     static void ClickingPlotShallNotAddArrowWhenImpossible();
     static void ClearButtonShallClearGraph();
@@ -118,6 +119,35 @@ void FrontendTest::AboutButtonShallTriggerDialogAndOKShallClose()
     QVERIFY2(aboutMessageBoxHasOneButton, qPrintable(QString::fromUtf8(u8"aboutMessageBox does not have exactly one button")));
 
     QVERIFY2(mw.aboutMessageBox == nullptr, qPrintable(QString::fromUtf8(u8"aboutMessageBox still reachable")));
+}
+
+void FrontendTest::WindowShallBeStateful()
+{
+    // Arrange
+    MainWindow mw;
+    mw.ui->funcLineEdit->setText(QString("z"));
+
+    // Act
+    QTest::mouseClick(mw.ui->funcSetButton, Qt::LeftButton);
+    bool isDisabledAfterSet = !mw.ui->funcLineEdit->isEnabled();
+
+    QTest::mouseClick(mw.ui->plot, Qt::LeftButton);
+    QTest::mouseClick(mw.ui->plot, Qt::LeftButton);
+    bool graphHasTwoItems = mw.ui->plot->itemCount() == 2;
+
+    QTest::mouseClick(mw.ui->funcClearButton, Qt::LeftButton);
+    bool isEnabledAfterClear = mw.ui->funcLineEdit->isEnabled();
+    bool graphHasNoItem = mw.ui->plot->itemCount() == 0;
+
+    QTest::mouseClick(mw.ui->plot, Qt::LeftButton);
+    bool graphStillHasNoItem = mw.ui->plot->itemCount() == 0;
+
+    // Assert
+    QVERIFY2(isDisabledAfterSet, qPrintable(QString::fromUtf8(u8"line edit enabled after set")));
+    QVERIFY2(graphHasTwoItems, qPrintable(QString::fromUtf8(u8"graph does not have expected items")));
+    QVERIFY2(isEnabledAfterClear, qPrintable(QString::fromUtf8(u8"line edit not enabled after clear")));
+    QVERIFY2(graphHasNoItem, qPrintable(QString::fromUtf8(u8"graph has item after clear")));
+    QVERIFY2(graphStillHasNoItem, qPrintable(QString::fromUtf8(u8"graph has item after clicking")));
 }
 
 void FrontendTest::ClickingPlotShallAddArrowWhenPossible()
