@@ -38,9 +38,19 @@ MainWindow::MainWindow(QWidget *parent)
     this->UpdateUiState();
 
     connect(ui->plot, &QCustomPlot::mousePress, this, &MainWindow::OnPlotClick);
+    connect(ui->funcLineEdit, &QLineEdit::textChanged, this, &MainWindow::OnFuncLineEditTextChanged);
     connect(ui->funcSetButton, &QAbstractButton::pressed, this, &MainWindow::OnSetPressed);
     connect(ui->funcClearButton, &QAbstractButton::pressed, this, &MainWindow::OnClearPressed);
     connect(ui->aboutButton, &QAbstractButton::pressed, this, &MainWindow::OnAboutPressed);
+
+    QColor lightPink = QColor(0xFF, 0xB6, 0xC1);
+
+    this->parseablePalette.setColor(QPalette::Base, Qt::white);
+    this->parseablePalette.setColor(QPalette::Text, Qt::black);
+    this->nonParseablePalette.setColor(QPalette::Base, lightPink);
+    this->nonParseablePalette.setColor(QPalette::Text, Qt::black);
+
+    ui->funcLineEdit->setPalette(this->parseablePalette);
 }
 
 MainWindow::~MainWindow()
@@ -81,6 +91,11 @@ void MainWindow::OnPlotClick(QMouseEvent * event)
     }
 
     this->AddArrow(inputX, inputY, result.value().real(), result.value().imag());
+}
+
+void MainWindow::OnFuncLineEditTextChanged()
+{
+    this->UpdateParseability();
 }
 
 void MainWindow::OnSetPressed()
@@ -127,9 +142,18 @@ void MainWindow::UpdateUiState()
     ui->funcClearButton->setDisabled(!this->plotting);
 }
 
+void MainWindow::UpdateParseability()
+{
+    std::string funcString = ui->funcLineEdit->text().toStdString();
+    bool isParseable = funcString.empty() || this->parser.IsParseable(funcString);
+    QPalette & palette = isParseable ? this->parseablePalette : this->nonParseablePalette;
+
+    ui->funcLineEdit->setPalette(palette);
+}
+
 void MainWindow::UpdateExpression()
 {
-    auto input = std::string(ui->funcLineEdit->text().toUtf8());
+    auto input = std::string(ui->funcLineEdit->text().toStdString());
     if (this->parser.IsParseable(input))
     {
         this->expression = this->parser.Parse(input);

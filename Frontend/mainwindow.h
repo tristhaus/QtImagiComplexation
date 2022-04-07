@@ -48,6 +48,9 @@ private:
     const int minValue = 180;
     const int maxValue = 240;
 
+    QPalette parseablePalette;
+    QPalette nonParseablePalette;
+
     bool plotting;
     Ui::MainWindow * ui;
     Backend::Parser parser;
@@ -56,16 +59,22 @@ private:
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+    MainWindow(const MainWindow&) = delete;
+    MainWindow(MainWindow&&) = delete;
+    MainWindow& operator=(const MainWindow&) = delete;
+    MainWindow& operator=(MainWindow&&) = delete;
     ~MainWindow() override;
 
 private slots:
     void OnPlotClick(QMouseEvent * event);
+    void OnFuncLineEditTextChanged();
     void OnSetPressed();
     void OnClearPressed();
     void OnAboutPressed();
 
 private:
     void UpdateUiState();
+    void UpdateParseability();
     void UpdateExpression();
     void ClearPlot();
     [[nodiscard]] QColor GenerateColor() const;

@@ -25,6 +25,7 @@
 #include "tst_fundamental.h"
 #include "tst_parser.h"
 #include "tst_product.h"
+#include "tst_subsetgenerator.h"
 #include "tst_sum.h"
 
 int main(int argc, char *argv[])

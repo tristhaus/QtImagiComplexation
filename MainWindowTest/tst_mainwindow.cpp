@@ -49,6 +49,7 @@ private slots:
     static void ClickingPlotShallAddArrowWhenPossible();
     static void ClickingPlotShallNotAddArrowWhenImpossible();
     static void ClearButtonShallClearGraph();
+    static void ParseabilityShallBeCorrectlyIndicated();
 #endif // _USE_LONG_TEST
 };
 
@@ -178,6 +179,29 @@ void FrontendTest::ClearButtonShallClearGraph()
     // Assert
     QVERIFY2(graphHasItems, qPrintable(QString::fromUtf8(u8"initial arrow not found")));
     QVERIFY2(graphHasNoMoreItems, qPrintable(QString::fromUtf8(u8"arrow present after clear")));
+}
+
+void FrontendTest::ParseabilityShallBeCorrectlyIndicated()
+{
+    // Arrange
+    MainWindow mw;
+    QColor lightPink = QColor(0xFF, 0xB6, 0xC1);
+
+    // spy needed such that events actually happen
+    QSignalSpy spyFuncLineEdit(mw.ui->funcLineEdit, &QLineEdit::textChanged);
+
+    // Act
+    mw.ui->funcLineEdit->setText(QString::fromUtf8(u8"z z"));
+
+    auto unparseablePalette = mw.ui->funcLineEdit->palette();
+
+    mw.ui->funcLineEdit->setText(QString::fromUtf8(u8"z * z"));
+
+    auto parseablePalette = mw.ui->funcLineEdit->palette();
+
+    // Assert
+    QVERIFY2(unparseablePalette.base().color() == lightPink, qPrintable(QString::fromUtf8(u8"initial arrow not found")));
+    QVERIFY2(parseablePalette.base().color() == Qt::white, qPrintable(QString::fromUtf8(u8"initial arrow not found")));
 }
 
 #endif // _USE_LONG_TEST
