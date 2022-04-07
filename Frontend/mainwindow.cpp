@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->plot, &QCustomPlot::mousePress, this, &MainWindow::OnPlotClick);
     connect(ui->funcLineEdit, &QLineEdit::textChanged, this, &MainWindow::OnFuncLineEditTextChanged);
+    connect(ui->funcLineEdit, &QLineEdit::returnPressed, this, &MainWindow::OnReturnKeyPressed);
     connect(ui->funcSetButton, &QAbstractButton::pressed, this, &MainWindow::OnSetPressed);
     connect(ui->funcClearButton, &QAbstractButton::pressed, this, &MainWindow::OnClearPressed);
     connect(ui->aboutButton, &QAbstractButton::pressed, this, &MainWindow::OnAboutPressed);
@@ -96,6 +97,11 @@ void MainWindow::OnPlotClick(QMouseEvent * event)
 void MainWindow::OnFuncLineEditTextChanged()
 {
     this->UpdateParseability();
+}
+
+void MainWindow::OnReturnKeyPressed()
+{
+    this->UpdateExpression();
 }
 
 void MainWindow::OnSetPressed()

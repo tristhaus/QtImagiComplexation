@@ -50,6 +50,7 @@ private slots:
     static void ClickingPlotShallNotAddArrowWhenImpossible();
     static void ClearButtonShallClearGraph();
     static void ParseabilityShallBeCorrectlyIndicated();
+    static void ReturnKeyOnParseableInputShallActivatePlotting();
 #endif // _USE_LONG_TEST
 };
 
@@ -200,8 +201,23 @@ void FrontendTest::ParseabilityShallBeCorrectlyIndicated()
     auto parseablePalette = mw.ui->funcLineEdit->palette();
 
     // Assert
-    QVERIFY2(unparseablePalette.base().color() == lightPink, qPrintable(QString::fromUtf8(u8"initial arrow not found")));
-    QVERIFY2(parseablePalette.base().color() == Qt::white, qPrintable(QString::fromUtf8(u8"initial arrow not found")));
+    QVERIFY2(unparseablePalette.base().color() == lightPink, qPrintable(QString::fromUtf8(u8"parseable when it should not be")));
+    QVERIFY2(parseablePalette.base().color() == Qt::white, qPrintable(QString::fromUtf8(u8"not parseable when it should be")));
+}
+
+void FrontendTest::ReturnKeyOnParseableInputShallActivatePlotting()
+{
+    // Arrange
+    MainWindow mw;
+    mw.ui->funcLineEdit->setText(QString(""));
+
+    QString function = "z*(z)\r";
+
+    // Act
+    QTest::keyClicks(mw.ui->funcLineEdit, function);
+
+    // Assert
+    QVERIFY2(mw.plotting, qPrintable(QString::fromUtf8(u8"not plotting when it should be")));
 }
 
 #endif // _USE_LONG_TEST

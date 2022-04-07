@@ -68,6 +68,7 @@ public:
 private slots:
     void OnPlotClick(QMouseEvent * event);
     void OnFuncLineEditTextChanged();
+    void OnReturnKeyPressed();
     void OnSetPressed();
     void OnClearPressed();
     void OnAboutPressed();
