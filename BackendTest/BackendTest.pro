@@ -36,6 +36,7 @@ HEADERS += \
         tst_fundamental.h \
         tst_equality.h \
         tst_parser.h \
+        tst_power.h \
         tst_product.h \
         tst_subsetgenerator.h \
         tst_sum.h

@@ -46,6 +46,7 @@ namespace Backend {
         static const std::string MinusString;
         static const std::string TimesString;
         static const std::string DivideString;
+        static const std::string PowerString;
 
     public:
         /*!
@@ -87,6 +88,7 @@ namespace Backend {
         [[nodiscard]] std::shared_ptr<Expression> ParseToImaginaryConstant(const std::string & input) const;
         [[nodiscard]] std::shared_ptr<Expression> ParseToSum(std::vector<std::string>& tokens, std::vector<std::string>& ops) const;
         [[nodiscard]] std::shared_ptr<Expression> ParseToProduct(std::vector<std::string>& tokens, std::vector<std::string>& ops) const;
+        [[nodiscard]] std::shared_ptr<Expression> ParseToPower(std::vector<std::string>& tokens, std::vector<std::string>& ops) const;
     };
 }
 

@@ -27,6 +27,7 @@
 #include "../Backend/basez.h"
 #include "../Backend/constant.h"
 #include "../Backend/parser.h"
+#include "../Backend/power.h"
 #include "../Backend/product.h"
 #include "../Backend/sum.h"
 
@@ -170,6 +171,153 @@ TEST(BackendTest, ParserShallParseComposite)
     // Assert
     EXPECT_EQ(*product1, *expression1);
     EXPECT_EQ(*sum2, *expression2);
+}
+
+TEST(BackendTest, PowerShouldParseCorrectly1)
+{
+    // Arrange
+    Backend::Parser parser(false);
+    std::string square = u8"z^2.0";
+
+    // Act
+    auto exprPower = parser.Parse(square);
+
+    // Assert
+    auto z = std::make_shared<Backend::BaseZ>();
+    auto constant = std::make_shared<Backend::Constant>(2.0);
+
+    Backend::Power referencePower(z, constant);
+
+    ASSERT_TRUE(exprPower);
+    EXPECT_EQ(referencePower, *exprPower);
+}
+
+TEST(BackendTest, PowerShouldParseCorrectly2)
+{
+    using namespace std::complex_literals;
+
+    // Arrange
+    Backend::Parser parser(false);
+    std::string invertedSquare = u8"z^(-2.0+3.0i)";
+
+    // Act
+    auto exprPower = parser.Parse(invertedSquare);
+
+    // Assert
+    auto z = std::make_shared<Backend::BaseZ>();
+    auto constant1 = std::make_shared<Backend::Constant>(-2.0);
+    auto constant2 = std::make_shared<Backend::Constant>(3.0i);
+    auto sum = std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({Backend::Sum::Summand(Backend::Sum::Sign::Plus, constant1), Backend::Sum::Summand(Backend::Sum::Sign::Plus, constant2)}));
+
+    Backend::Power referencePower(z, sum);
+
+    ASSERT_TRUE(exprPower);
+    EXPECT_EQ(referencePower, *exprPower);
+}
+
+TEST(BackendTest, PowerShouldParseCorrectly3)
+{
+    // Arrange
+    Backend::Parser parser(false);
+    std::string invertedSquare = u8"z^-2.0";
+
+    // Act
+    auto exprPower = parser.Parse(invertedSquare);
+
+    // Assert
+    ASSERT_FALSE(exprPower);
+}
+
+TEST(BackendTest, PowerShouldParseCorrectly4)
+{
+    // Arrange
+    Backend::Parser parser(false);
+    std::string powerString = u8"2.0^z";
+
+    // Act
+    auto exprPower = parser.Parse(powerString);
+
+    // Assert
+    auto constant = std::make_shared<Backend::Constant>(2.0);
+    auto z = std::make_shared<Backend::BaseZ>();
+
+    Backend::Power referencePower(constant, z);
+
+    ASSERT_TRUE(exprPower);
+    EXPECT_EQ(referencePower, *exprPower);
+}
+
+TEST(BackendTest, PowerShouldParseCorrectly5)
+{
+    using namespace std::complex_literals;
+
+    // Arrange
+    Backend::Parser parser(false);
+    std::string powerString = u8"-((2.0+3.0i)^z)";
+
+    // Act
+    auto exprPower = parser.Parse(powerString);
+
+    // Assert
+    auto constant1 = std::make_shared<Backend::Constant>(2.0);
+    auto constant2 = std::make_shared<Backend::Constant>(3.0i);
+    auto sum = std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({Backend::Sum::Summand(Backend::Sum::Sign::Plus, constant1), Backend::Sum::Summand(Backend::Sum::Sign::Plus, constant2)}));
+    auto z = std::make_shared<Backend::BaseZ>();
+
+    auto powerTerm = std::make_shared<Backend::Power>(sum, z);
+
+    Backend::Sum referencePower({Backend::Sum::Summand(Backend::Sum::Sign::Minus, powerTerm)});
+
+    ASSERT_TRUE(exprPower);
+    EXPECT_EQ(referencePower, *exprPower);
+}
+
+TEST(BackendTest, LessSimplePowerShouldParseCorrectly)
+{
+    // Arrange
+    Backend::Parser parser(false);
+    std::string powerString = u8"-((2.0*z)^(z+1.0))";
+
+    // Act
+    auto exprProduct = parser.Parse(powerString);
+
+    // Assert
+    auto constant1 = std::make_shared<Backend::Constant>(1.0);
+    auto constant2 = std::make_shared<Backend::Constant>(2.0);
+    auto z = std::make_shared<Backend::BaseZ>();
+
+    auto bracketProduct = std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>{Backend::Product::Factor(Backend::Product::Exponent::Positive, constant2), Backend::Product::Factor(Backend::Product::Exponent::Positive, z)});
+
+    auto bracketSum = std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>{Backend::Sum::Summand(Backend::Sum::Sign::Plus, z), Backend::Sum::Summand(Backend::Sum::Sign::Plus, constant1)});
+
+    auto powerTerm = std::make_shared<Backend::Power>(bracketProduct, bracketSum);
+
+    Backend::Sum referencePower({Backend::Sum::Summand(Backend::Sum::Sign::Minus, powerTerm)});
+
+    ASSERT_TRUE(exprProduct);
+    EXPECT_EQ(referencePower, *exprProduct);
+}
+
+TEST(BackendTest, PowerTowerShouldParseCorrectly)
+{
+    // Arrange
+    Backend::Parser parser(false);
+    std::string powerString = u8"3.0^z^2.0";
+
+    // Act
+    auto exprProduct = parser.Parse(powerString);
+
+    // Assert
+    auto constant1 = std::make_shared<Backend::Constant>(3.0);
+    auto constant2 = std::make_shared<Backend::Constant>(2.0);
+    auto z = std::make_shared<Backend::BaseZ>();
+
+    auto upperPower = std::make_shared<Backend::Power>(z, constant2);
+
+    Backend::Power referencePower(constant1, upperPower);
+
+    ASSERT_TRUE(exprProduct);
+    EXPECT_EQ(referencePower, *exprProduct);
 }
 
 struct TestConstantParsing
@@ -421,8 +569,8 @@ INSTANTIATE_TEST_SUITE_P(BackendTest, ParseabilityTest, // clazy:exclude=non-pod
     TestFunctionResult{"Incomplete sum", "1+z+", false},
     TestFunctionResult{"Complete product", "1/z", true},
     TestFunctionResult{"Incomplete product", "1/", false},
-//    TestFunctionResult{"Complete power", "1^z", true},
-//    TestFunctionResult{"Incomplete power", "1^", false},
+    TestFunctionResult{"Complete power", "1^z", true},
+    TestFunctionResult{"Incomplete power", "1^", false},
     TestFunctionResult{"Malformed", "(z)z", false},
 //    TestFunctionResult{"Function no argument", "sin()", false},
     TestFunctionResult{"Number with space", "1 .0", true},
@@ -451,13 +599,13 @@ INSTANTIATE_TEST_SUITE_P(BackendTest, ParseabilityTest, // clazy:exclude=non-pod
     TestFunctionResult{"shadow16", "-2.0*z+1.0", true},
     TestFunctionResult{"shadow17", "-2.1*(z+3.1)+1.1", true},
     TestFunctionResult{"shadow18", "(z+3.1)*-2.1+1.1", true},
-//    TestFunctionResult{"shadow19", "x^2.0", true},
-//    TestFunctionResult{"shadow20", "x^(-2.0)", true},
-//    TestFunctionResult{"shadow21", "x^-2.0", false},
-//    TestFunctionResult{"shadow22", "2.0^x", true},
-//    TestFunctionResult{"shadow23", "-(2.0^x)", true},
-//    TestFunctionResult{"shadow24", "-((2.0*x)^(x+1.0))", true},
-//    TestFunctionResult{"shadow25", "3.0^x^2.0", true},
+    TestFunctionResult{"shadow19", "z^2.0", true},
+    TestFunctionResult{"shadow20", "z^(-2.0)", true},
+    TestFunctionResult{"shadow21", "z^-2.0", false},
+    TestFunctionResult{"shadow22", "2.0^z", true},
+    TestFunctionResult{"shadow23", "-(2.0^z)", true},
+    TestFunctionResult{"shadow24", "-((2.0*z)^(z+1.0))", true},
+    TestFunctionResult{"shadow25", "3.0^z^2.0", true},
 //    TestFunctionResult{"shadow26", "cos(x+sin(x))", true},
 //    TestFunctionResult{"shadow27", "abs(sin(cos(tan(exp(ln(x))))))", true},
 //    TestFunctionResult{"shadow28", "cis(x+sin(x))", false},

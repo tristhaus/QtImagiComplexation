@@ -23,6 +23,7 @@ HEADERS += \
     $$PWD/basez.h \
     $$PWD/constant.h \
     $$PWD/parser.h \
+    $$PWD/power.h \
     $$PWD/product.h \
     $$PWD/sum.h
 
@@ -30,5 +31,6 @@ SOURCES += \
     $$PWD/basez.cpp \
     $$PWD/constant.cpp \
     $$PWD/parser.cpp \
+    $$PWD/power.cpp \
     $$PWD/product.cpp \
     $$PWD/sum.cpp
