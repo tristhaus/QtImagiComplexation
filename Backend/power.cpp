@@ -59,7 +59,7 @@ namespace Backend
         std::feclearexcept(FE_ALL_EXCEPT);
         auto retval = std::pow(baseResult.value(), exponentResult.value());
 
-        if (!(std::isfinite(retval.real()) || std::isfinite(retval.imag())) || std::fetestexcept(FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID))
+        if (!(std::isfinite(retval.real()) || std::isfinite(retval.imag())) || (std::fetestexcept(FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID) != 0))
         {
             return {};
             std::feclearexcept(FE_ALL_EXCEPT);

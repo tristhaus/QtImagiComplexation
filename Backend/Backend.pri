@@ -22,6 +22,7 @@ HEADERS += \
     $$PWD/expression.h \
     $$PWD/basez.h \
     $$PWD/constant.h \
+    $$PWD/functions.h \
     $$PWD/parser.h \
     $$PWD/power.h \
     $$PWD/product.h \
@@ -30,6 +31,7 @@ HEADERS += \
 SOURCES += \
     $$PWD/basez.cpp \
     $$PWD/constant.cpp \
+    $$PWD/functions.cpp \
     $$PWD/parser.cpp \
     $$PWD/power.cpp \
     $$PWD/product.cpp \

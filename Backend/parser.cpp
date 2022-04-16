@@ -24,6 +24,7 @@
 
 #include "basez.h"
 #include "constant.h"
+#include "functions.h"
 #include "parser.h"
 #include "power.h"
 #include "product.h"
@@ -46,6 +47,26 @@ namespace Backend {
         }
     }
 
+    bool Parser::Register(std::string name, CreateFunction createFunction)
+    {
+        auto & functions = Parser::GetRegisteredFunctions();
+
+        auto it = functions.find(name);
+        if (it == functions.end())
+        {
+            functions.emplace(name, createFunction);
+            return true;
+        }
+
+        return false;
+    }
+
+    std::map<std::string, CreateFunction> & Parser::GetRegisteredFunctions()
+    {
+        static std::map<std::string, CreateFunction> theFunctions;
+        return theFunctions;
+    }
+
     std::regex Parser::GetValidationRegex() const
     {
         // This must be adjusted if another math operator is added to the game.
@@ -53,6 +74,23 @@ namespace Backend {
 
         // allow independent variable and imaginary unit
         std::set<char> allowedLetters {'z', 'Z', 'i', 'I'};
+
+        // grab from all function names all letters
+        auto & registrationMap = Parser::GetRegisteredFunctions();
+        auto registrationMapIt = registrationMap.begin();
+        auto registrationMapEnd = registrationMap.end();
+
+        for(; registrationMapIt != registrationMapEnd; ++registrationMapIt)
+        {
+            auto functionName = registrationMapIt->first;
+            auto functionNameIt = functionName.begin();
+            auto functionNameEnd = functionName.end();
+
+            for(; functionNameIt != functionNameEnd; ++functionNameIt)
+            {
+                allowedLetters.insert(*functionNameIt);
+            }
+        }
 
         // extend regex by the collection of letters
         auto allowedLettersIt = allowedLetters.begin();
@@ -324,6 +362,12 @@ namespace Backend {
             return this->ParseToPower(tokens, ops);
         }
 
+        // Fourth case: functions
+        if (tokens.size() == 1)
+        {
+            return this->ParseToFunction(tokens);
+        }
+
         return nullptr;
     }
 
@@ -562,5 +606,32 @@ namespace Backend {
         }
 
         return std::make_shared<Power>(baseExpression, exponentExpression);
+    }
+
+    std::shared_ptr<Expression> Parser::ParseToFunction(std::vector<std::string>& tokens) const
+    {
+        auto functionToken = tokens[0];
+        tokens.erase(tokens.begin());
+        auto index = functionToken.find('(');
+        auto name = functionToken.substr(0, index);
+
+        auto & functions = Parser::GetRegisteredFunctions();
+
+        auto createFunction = functions.find(name);
+
+        if(createFunction == functions.end())
+        {
+            return nullptr;
+        }
+
+        auto argumentToken = functionToken.substr(index);
+        auto argument = this->InternalParse(argumentToken);
+
+        if(!argument)
+        {
+            return nullptr;
+        }
+
+        return (*createFunction).second(argument);
     }
 }

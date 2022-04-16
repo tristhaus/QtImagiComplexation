@@ -26,6 +26,7 @@
 
 #include "../Backend/basez.h"
 #include "../Backend/constant.h"
+#include "../Backend/functions.h"
 #include "../Backend/parser.h"
 #include "../Backend/power.h"
 #include "../Backend/product.h"
@@ -320,6 +321,52 @@ TEST(BackendTest, PowerTowerShouldParseCorrectly)
     EXPECT_EQ(referencePower, *exprProduct);
 }
 
+TEST(BackendTest, FunctionsShouldParseCorrectly)
+{
+    // Arrange
+    Backend::Parser parser(false);
+    std::string functionString = "cos(z+sin(z))";
+
+    // Act
+    auto exprFunction = parser.Parse(functionString);
+
+    // Assert
+    auto z = std::make_shared<Backend::BaseZ>();
+    auto sine = std::make_shared<Backend::Sine>(z);
+    auto sum = std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>{Backend::Sum::Summand(Backend::Sum::Sign::Plus, z), Backend::Sum::Summand(Backend::Sum::Sign::Plus, sine)});
+    auto referenceExpression = std::make_shared<Backend::Cosine>(sum);
+
+    ASSERT_TRUE(exprFunction);
+    EXPECT_EQ(*referenceExpression, *exprFunction);
+}
+
+TEST(BackendTest, FunctionsTowerShouldParseCorrectly)
+{
+    // Arrange
+    Backend::Parser parser(false);
+    std::string functionString = "abs(Re(Im(norm(conj(sin(cos(tan(sqrt(exp(ln(z)))))))))))";
+
+    // Act
+    auto exprFunction = parser.Parse(functionString);
+
+    // Assert
+    auto z = std::make_shared<Backend::BaseZ>();
+    auto ln = std::make_shared<Backend::NaturalLogarithm>(z);
+    auto exp = std::make_shared<Backend::NaturalExponential>(ln);
+    auto sqrt = std::make_shared<Backend::SquareRoot>(exp);
+    auto tan = std::make_shared<Backend::Tangent>(sqrt);
+    auto cos = std::make_shared<Backend::Cosine>(tan);
+    auto sin = std::make_shared<Backend::Sine>(cos);
+    auto conj = std::make_shared<Backend::Conjugate>(sin);
+    auto norm = std::make_shared<Backend::Norm>(conj);
+    auto im = std::make_shared<Backend::ImaginaryPart>(norm);
+    auto re = std::make_shared<Backend::RealPart>(im);
+    auto referenceExpression = std::make_shared<Backend::Magnitude>(re);
+
+    ASSERT_TRUE(exprFunction);
+    EXPECT_EQ(*referenceExpression, *exprFunction);
+}
+
 struct TestConstantParsing
 {
     std::string input;
@@ -572,7 +619,7 @@ INSTANTIATE_TEST_SUITE_P(BackendTest, ParseabilityTest, // clazy:exclude=non-pod
     TestFunctionResult{"Complete power", "1^z", true},
     TestFunctionResult{"Incomplete power", "1^", false},
     TestFunctionResult{"Malformed", "(z)z", false},
-//    TestFunctionResult{"Function no argument", "sin()", false},
+    TestFunctionResult{"Function no argument", "sin()", false},
     TestFunctionResult{"Number with space", "1 .0", true},
     TestFunctionResult{"Double z 1", "z z", false},
     TestFunctionResult{"Double z 2", "zz", false},
@@ -606,10 +653,10 @@ INSTANTIATE_TEST_SUITE_P(BackendTest, ParseabilityTest, // clazy:exclude=non-pod
     TestFunctionResult{"shadow23", "-(2.0^z)", true},
     TestFunctionResult{"shadow24", "-((2.0*z)^(z+1.0))", true},
     TestFunctionResult{"shadow25", "3.0^z^2.0", true},
-//    TestFunctionResult{"shadow26", "cos(x+sin(x))", true},
-//    TestFunctionResult{"shadow27", "abs(sin(cos(tan(exp(ln(x))))))", true},
-//    TestFunctionResult{"shadow28", "cis(x+sin(x))", false},
-//    TestFunctionResult{"shadow29", "z(x+sin(x))", false}
+    TestFunctionResult{"shadow26", "cos(z+sin(z))", true},
+    TestFunctionResult{"shadow27", "abs(Re(Im(norm(conj(sin(cos(tan(sqrt(exp(ln(z)))))))))))", true},
+    TestFunctionResult{"shadow28", "cis(z+sin(z))", false},
+    TestFunctionResult{"shadow29", "z(z+sin(z))", false},
     TestFunctionResult{"Empty", "", false}
 ));
 

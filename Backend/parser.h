@@ -27,6 +27,8 @@
 
 namespace Backend {
 
+    using CreateFunction = std::shared_ptr<Expression> (*)(std::shared_ptr<Expression>);
+
     /*!
      * \class Parser
      * \brief The Parser class provides functionality to obtain a \ref Expression from a string.
@@ -68,6 +70,16 @@ namespace Backend {
          */
         [[nodiscard]] bool IsParseable(const std::string & input) const;
 
+         /*!
+         * \brief Register registers a function to create an expression representing
+         *        a mathematical function under the given human-readable name.
+         * \param name The human-readable name of the function, e.g. "sin".
+         * \param createFunction Pointer to a function to create an expression
+         *        representing the mathematical function.
+         * \return A dummy bool such that the function can be used in static initialization.
+         */
+        static bool Register(std::string name, CreateFunction createFunction);
+
     private:
         /*!
          * \brief GetRegisteredFunctions Gets the class-static map of registered functions for the parser.
@@ -77,6 +89,8 @@ namespace Backend {
          *
          * \return The registration map.
          */
+        static std::map<std::string, CreateFunction> & GetRegisteredFunctions();
+
         [[nodiscard]] std::regex GetValidationRegex() const;
         [[nodiscard]] std::string PrepareInput(const std::string & input) const;
         [[nodiscard]] bool ValidateInput(const std::string & input) const;
@@ -89,6 +103,7 @@ namespace Backend {
         [[nodiscard]] std::shared_ptr<Expression> ParseToSum(std::vector<std::string>& tokens, std::vector<std::string>& ops) const;
         [[nodiscard]] std::shared_ptr<Expression> ParseToProduct(std::vector<std::string>& tokens, std::vector<std::string>& ops) const;
         [[nodiscard]] std::shared_ptr<Expression> ParseToPower(std::vector<std::string>& tokens, std::vector<std::string>& ops) const;
+        [[nodiscard]] std::shared_ptr<Expression> ParseToFunction(std::vector<std::string>& tokens) const;
     };
 }
 

@@ -16,22 +16,10 @@
  *
  */
 
-#include <gtest/gtest.h>
+/*
+ * may only be defined once in the project
+ * causes the static init for the registration
+ */
+#define ONE_TIME_EXECUTE_FUNCTIONS_H
 
-#include "tst_basez.h"
-#include "tst_complexmatcher.h"
-#include "tst_constant.h"
-#include "tst_equality.h"
-#include "tst_functions.h"
-#include "tst_fundamental.h"
-#include "tst_parser.h"
-#include "tst_power.h"
-#include "tst_product.h"
-#include "tst_subsetgenerator.h"
-#include "tst_sum.h"
-
-int main(int argc, char *argv[])
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
+#include "functions.h"

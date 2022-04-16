@@ -33,6 +33,7 @@ HEADERS += \
         tst_basez.h \
         tst_complexmatcher.h \
         tst_constant.h \
+        tst_functions.h \
         tst_fundamental.h \
         tst_equality.h \
         tst_parser.h \

@@ -23,7 +23,7 @@
 unsigned long long ipow(unsigned long long base, unsigned long long exp)
 {
     unsigned long long result = 1ULL;
-    while(exp)
+    while(exp != 0U)
     {
         if((exp & 1) != 0U)
         {
