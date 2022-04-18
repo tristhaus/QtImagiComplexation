@@ -32,12 +32,6 @@
 
 namespace Backend {
 
-    const std::string Parser::PlusString = "+";
-    const std::string Parser::MinusString = "-";
-    const std::string Parser::TimesString = "*";
-    const std::string Parser::DivideString = "/";
-    const std::string Parser::PowerString = "^";
-
     Parser::Parser(bool optimize)
         : optimize(optimize)
     {
@@ -47,7 +41,7 @@ namespace Backend {
         }
     }
 
-    bool Parser::Register(std::string name, CreateFunction createFunction)
+    bool Parser::Register(const std::string & name, CreateFunction createFunction)
     {
         auto & functions = Parser::GetRegisteredFunctions();
 
@@ -473,7 +467,7 @@ namespace Backend {
                     return nullptr;
                 }
 
-                targetList.push_back(Sum::Summand(sign, expression));
+                targetList.emplace_back(Sum::Summand(sign, expression));
                 token = tokens[0];
                 tokens.erase(tokens.begin());
                 sign = *opsIt == "+" ? Sum::Sign::Plus : Sum::Sign::Minus;
@@ -491,7 +485,7 @@ namespace Backend {
             token = tokens[0];
         }
 
-        if (token != "")
+        if (!token.empty())
         {
             auto expression = this->InternalParse(token);
             if (expression == nullptr)
@@ -499,7 +493,7 @@ namespace Backend {
                 return nullptr;
             }
 
-            targetList.push_back(Sum::Summand(sign, expression));
+            targetList.emplace_back(Sum::Summand(sign, expression));
         }
 
         return std::make_shared<Sum>(targetList);
@@ -532,7 +526,7 @@ namespace Backend {
                     return nullptr;
                 }
 
-                targetList.push_back(Product::Factor(sign, expression));
+                targetList.emplace_back(Product::Factor(sign, expression));
                 token = tokens[0];
                 tokens.erase(tokens.begin());
                 sign = *opsIt == "*" ? Product::Exponent::Positive : Product::Exponent::Negative;
@@ -550,7 +544,7 @@ namespace Backend {
             token = tokens[0];
         }
 
-        if (token != "")
+        if (!token.empty())
         {
             auto expression = this->InternalParse(token);
             if (expression == nullptr)
@@ -558,7 +552,7 @@ namespace Backend {
                 return nullptr;
             }
 
-            targetList.push_back(Product::Factor(sign, expression));
+            targetList.emplace_back(Product::Factor(sign, expression));
         }
 
         return std::make_shared<Product>(targetList);

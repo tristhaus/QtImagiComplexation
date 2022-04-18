@@ -8,11 +8,28 @@ A program to interactively plot a vector field representation of functions in th
 
 ## For Users
 
-This is alpha status.
+This is beta status.
+
+| Name  | Code  |
+|---|---|
+| Constant | `-0.357 + 3.1i`, `0.5I` |
+| Independent variable | `z` |
+| Basic arithmetic | `+ - * \` |
+| Power | `^` |
+| Grouping |  `()` |
+| Functions | [`Re`](https://en.cppreference.com/w/cpp/numeric/complex/real), [`Im`](https://en.cppreference.com/w/cpp/numeric/complex/imag), [`abs`](https://en.cppreference.com/w/cpp/numeric/complex/abs), [`norm`](https://en.cppreference.com/w/cpp/numeric/complex/norm), [`conj`](https://en.cppreference.com/w/cpp/numeric/complex/conj), [`sin`](https://en.cppreference.com/w/cpp/numeric/complex/sin), [`cos`](https://en.cppreference.com/w/cpp/numeric/complex/cos), [`tan`](https://en.cppreference.com/w/cpp/numeric/complex/tan), [`sqrt`](https://en.cppreference.com/w/cpp/numeric/complex/sqrt), [`exp`](https://en.cppreference.com/w/cpp/numeric/complex/exp), [`ln`](https://en.cppreference.com/w/cpp/numeric/complex/log) |
+
+Note that `Re` and `Im` both return as a real part. That is, to reconstruct `z`, call `Re(z) + Im(z) * i`.
+
+See Release tab for up-to-date information on what is supported. See Issues tab for planned improvements. You may contact me at `qtpollynom` at `gmail.com` for comments on the program.
 
 ## For Developers
 
 I am currently not looking for contributors since this is primarily my hobby.
+
+In order to compile the tests, you need to define one of two preprocessor constants
+ * `_SKIP_LONG_TEST` if you wish to skip the long-running tests
+ * `_USE_LONG_TEST` if you wish to execute those tests
 
 `clang-tidy` has been added, be sure to configure QtCreator to use the [.clang-tidy](.clang-tidy) file.
 

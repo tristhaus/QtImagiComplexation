@@ -44,11 +44,11 @@ namespace Backend {
          */
         static const std::regex InputValidationRegex;
 
-        static const std::string PlusString;
-        static const std::string MinusString;
-        static const std::string TimesString;
-        static const std::string DivideString;
-        static const std::string PowerString;
+        constexpr static const std::string_view PlusString = "+";
+        constexpr static const std::string_view MinusString = "-";
+        constexpr static const std::string_view TimesString = "*";
+        constexpr static const std::string_view DivideString = "/";
+        constexpr static const std::string_view PowerString = "^";
 
     public:
         /*!
@@ -78,7 +78,7 @@ namespace Backend {
          *        representing the mathematical function.
          * \return A dummy bool such that the function can be used in static initialization.
          */
-        static bool Register(std::string name, CreateFunction createFunction);
+        static bool Register(const std::string & name, CreateFunction createFunction);
 
     private:
         /*!
