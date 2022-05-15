@@ -367,208 +367,268 @@ TEST(BackendTest, FunctionsTowerShouldParseCorrectly)
     EXPECT_EQ(*referenceExpression, *exprFunction);
 }
 
-struct TestConstantParsing
+struct TestParsing
 {
     std::string input;
     bool optimize;
     std::shared_ptr<Backend::Expression> expected;
-    friend std::ostream& operator<<(std::ostream& os, const TestConstantParsing& obj)
+    friend std::ostream& operator<<(std::ostream& os, const TestParsing& obj)
     {
         return os << u8"input: " << obj.input;
     }
 };
 
-class ConstantParsingTest : public testing::TestWithParam<TestConstantParsing>
+class InputParsingTest : public testing::TestWithParam<TestParsing>
 {
 };
 
 using namespace std::complex_literals;
 
-INSTANTIATE_TEST_SUITE_P(BackendTest, ConstantParsingTest, // clazy:exclude=non-pod-global-static //NOLINT (cert-err58-cpp, cppcoreguidelines-avoid-non-const-global-variables, fuchsia-statically-constructed-objects)
+INSTANTIATE_TEST_SUITE_P(BackendTest, InputParsingTest, // clazy:exclude=non-pod-global-static //NOLINT (cert-err58-cpp, cppcoreguidelines-avoid-non-const-global-variables, fuchsia-statically-constructed-objects)
     testing::Values(
     // indifferent to optimization
-    TestConstantParsing{u8"2.0", false, std::make_shared<Backend::Constant>(2.0)},
-    TestConstantParsing{u8"2", false, std::make_shared<Backend::Constant>(2.0)},
-    TestConstantParsing{u8"+2.0", false, std::make_shared<Backend::Constant>(2.0)},
-    TestConstantParsing{u8"+2", false, std::make_shared<Backend::Constant>(2.0)},
-    TestConstantParsing{u8"-2.0", false, std::make_shared<Backend::Constant>(-2.0)},
-    TestConstantParsing{u8"-2", false, std::make_shared<Backend::Constant>(-2.0)},
-    TestConstantParsing{u8"3.0i", false, std::make_shared<Backend::Constant>(3.0i)},
-    TestConstantParsing{u8"3i", false, std::make_shared<Backend::Constant>(3.0i)},
-    TestConstantParsing{u8"+3.0i", false, std::make_shared<Backend::Constant>(3.0i)},
-    TestConstantParsing{u8"+3i", false, std::make_shared<Backend::Constant>(3.0i)},
-    TestConstantParsing{u8"-3.0i", false, std::make_shared<Backend::Constant>(-3.0i)},
-    TestConstantParsing{u8"-3i", false, std::make_shared<Backend::Constant>(-3.0i)},
+    TestParsing{u8"2.0", false, std::make_shared<Backend::Constant>(2.0)},
+    TestParsing{u8"2", false, std::make_shared<Backend::Constant>(2.0)},
+    TestParsing{u8"+2.0", false, std::make_shared<Backend::Constant>(2.0)},
+    TestParsing{u8"+2", false, std::make_shared<Backend::Constant>(2.0)},
+    TestParsing{u8"-2.0", false, std::make_shared<Backend::Constant>(-2.0)},
+    TestParsing{u8"-2", false, std::make_shared<Backend::Constant>(-2.0)},
+    TestParsing{u8"3.0i", false, std::make_shared<Backend::Constant>(3.0i)},
+    TestParsing{u8"3i", false, std::make_shared<Backend::Constant>(3.0i)},
+    TestParsing{u8"+3.0i", false, std::make_shared<Backend::Constant>(3.0i)},
+    TestParsing{u8"+3i", false, std::make_shared<Backend::Constant>(3.0i)},
+    TestParsing{u8"-3.0i", false, std::make_shared<Backend::Constant>(-3.0i)},
+    TestParsing{u8"-3i", false, std::make_shared<Backend::Constant>(-3.0i)},
     // non-optimized
-    TestConstantParsing{u8"3.0*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
+    TestParsing{u8"3.0*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"3*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
+    TestParsing{u8"3*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"+3.0*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
+    TestParsing{u8"+3.0*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"+3*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
+    TestParsing{u8"+3*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"-3.0*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
+    TestParsing{u8"-3.0*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(-3.0)),
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"-3*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
+    TestParsing{u8"-3*i", false, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(-3.0)),
                             Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"2.0+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2.0+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"2+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"2.0+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2.0+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"2+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"+2.0+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2.0+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"+2+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"+2.0+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2.0+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"+2+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"-2.0+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2.0+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"-2+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2+3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"-2.0+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2.0+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"-2+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2+3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"2.0-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2.0-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"2-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"2.0-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2.0-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"2-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"+2.0-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2.0-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"+2-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"+2.0-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2.0-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"+2-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"-2.0-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2.0-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"-2-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2-3.0i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"-2.0-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2.0-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"-2-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2-3i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(3.0i))}))},
-    TestConstantParsing{u8"2.0+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2.0+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"2+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"2.0-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2.0-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"2-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"2-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"+2.0+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2.0+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"+2+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"+2.0-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2.0-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"+2-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+2-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"-2.0+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2.0+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"-2+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2+i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"-2.0-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2.0-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"-2-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-2-i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-2.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Constant>(1.0i))}))},
-    TestConstantParsing{u8"3.0+2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"3.0+2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"3+2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"3+2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"+3.0+2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+3.0+2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"+3+2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+3+2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"3.0-2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"3.0-2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"3-2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"3-2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"+3.0-2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+3.0-2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"+3-2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"+3-2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"-3.0+2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-3.0+2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"-3+2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-3+2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"-3.0-2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-3.0-2.0*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"-3-2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
+    TestParsing{u8"-3-2*i", false, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand>({
                             Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-3.0)),
                             Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>({Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(1.0i))})))}))},
-    TestConstantParsing{u8"ii", false, nullptr}
+    // optimized
+    TestParsing{u8"3.0*i", true, std::make_shared<Backend::Constant>(3.0i)},
+    TestParsing{u8"3*i", true, std::make_shared<Backend::Constant>(3.0i)},
+    TestParsing{u8"+3.0*i", true, std::make_shared<Backend::Constant>(3.0i)},
+    TestParsing{u8"+3*i", true, std::make_shared<Backend::Constant>(3.0i)},
+    TestParsing{u8"-3.0*i", true, std::make_shared<Backend::Constant>(-3.0i)},
+    TestParsing{u8"-3*i", true, std::make_shared<Backend::Constant>(-3.0i)},
+    TestParsing{u8"2.0+3.0i", true, std::make_shared<Backend::Constant>(2.0+3.0i)},
+    TestParsing{u8"2+3.0i", true, std::make_shared<Backend::Constant>(2.0+3.0i)},
+    TestParsing{u8"2.0+3i", true, std::make_shared<Backend::Constant>(2.0+3.0i)},
+    TestParsing{u8"2+3i", true, std::make_shared<Backend::Constant>(2.0+3.0i)},
+    TestParsing{u8"+2.0+3.0i", true, std::make_shared<Backend::Constant>(2.0+3.0i)},
+    TestParsing{u8"+2+3.0i", true, std::make_shared<Backend::Constant>(2.0+3.0i)},
+    TestParsing{u8"+2.0+3i", true, std::make_shared<Backend::Constant>(2.0+3.0i)},
+    TestParsing{u8"+2+3i", true, std::make_shared<Backend::Constant>(2.0+3.0i)},
+    TestParsing{u8"-2.0+3.0i", true, std::make_shared<Backend::Constant>(-2.0+3.0i)},
+    TestParsing{u8"-2+3.0i", true, std::make_shared<Backend::Constant>(-2.0+3.0i)},
+    TestParsing{u8"-2.0+3i", true, std::make_shared<Backend::Constant>(-2.0+3.0i)},
+    TestParsing{u8"-2+3i", true, std::make_shared<Backend::Constant>(-2.0+3.0i)},
+    TestParsing{u8"2.0-3.0i", true, std::make_shared<Backend::Constant>(2.0-3.0i)},
+    TestParsing{u8"2-3.0i", true, std::make_shared<Backend::Constant>(2.0-3.0i)},
+    TestParsing{u8"2.0-3i", true, std::make_shared<Backend::Constant>(2.0-3.0i)},
+    TestParsing{u8"2-3i", true, std::make_shared<Backend::Constant>(2.0-3.0i)},
+    TestParsing{u8"+2.0-3.0i", true, std::make_shared<Backend::Constant>(2.0-3.0i)},
+    TestParsing{u8"+2-3.0i", true, std::make_shared<Backend::Constant>(2.0-3.0i)},
+    TestParsing{u8"+2.0-3i", true, std::make_shared<Backend::Constant>(2.0-3.0i)},
+    TestParsing{u8"+2-3i", true, std::make_shared<Backend::Constant>(2.0-3.0i)},
+    TestParsing{u8"-2.0-3.0i", true, std::make_shared<Backend::Constant>(-2.0-3.0i)},
+    TestParsing{u8"-2-3.0i", true, std::make_shared<Backend::Constant>(-2.0-3.0i)},
+    TestParsing{u8"-2.0-3i", true, std::make_shared<Backend::Constant>(-2.0-3.0i)},
+    TestParsing{u8"-2-3i", true, std::make_shared<Backend::Constant>(-2.0-3.0i)},
+    TestParsing{u8"2.0+i", true, std::make_shared<Backend::Constant>(2.0+1.0i)},
+    TestParsing{u8"2+i", true, std::make_shared<Backend::Constant>(2.0+1.0i)},
+    TestParsing{u8"2.0-i", true, std::make_shared<Backend::Constant>(2.0-1.0i)},
+    TestParsing{u8"2-i", true, std::make_shared<Backend::Constant>(2.0-1.0i)},
+    TestParsing{u8"+2.0+i", true, std::make_shared<Backend::Constant>(2.0+1.0i)},
+    TestParsing{u8"+2+i", true, std::make_shared<Backend::Constant>(2.0+1.0i)},
+    TestParsing{u8"+2.0-i", true, std::make_shared<Backend::Constant>(2.0-1.0i)},
+    TestParsing{u8"+2-i", true, std::make_shared<Backend::Constant>(2.0-1.0i)},
+    TestParsing{u8"-2.0+i", true, std::make_shared<Backend::Constant>(-2.0+1.0i)},
+    TestParsing{u8"-2+i", true, std::make_shared<Backend::Constant>(-2.0+1.0i)},
+    TestParsing{u8"-2.0-i", true, std::make_shared<Backend::Constant>(-2.0-1.0i)},
+    TestParsing{u8"-2-i", true, std::make_shared<Backend::Constant>(-2.0-1.0i)},
+    TestParsing{u8"3.0+2.0*i", true, std::make_shared<Backend::Constant>(3.0+2.0i)},
+    TestParsing{u8"3+2*i", true, std::make_shared<Backend::Constant>(3.0+2.0i)},
+    TestParsing{u8"+3.0+2.0*i", true, std::make_shared<Backend::Constant>(3.0+2.0i)},
+    TestParsing{u8"+3+2*i", true, std::make_shared<Backend::Constant>(3.0+2.0i)},
+    TestParsing{u8"3.0-2.0*i", true, std::make_shared<Backend::Constant>(3.0-2.0i)},
+    TestParsing{u8"3-2*i", true, std::make_shared<Backend::Constant>(3.0-2.0i)},
+    TestParsing{u8"+3.0-2.0*i", true, std::make_shared<Backend::Constant>(3.0-2.0i)},
+    TestParsing{u8"+3-2*i", true, std::make_shared<Backend::Constant>(3.0-2.0i)},
+    TestParsing{u8"-3.0+2.0*i", true, std::make_shared<Backend::Constant>(-3.0-2.0i)},
+    TestParsing{u8"-3+2*i", true, std::make_shared<Backend::Constant>(-3.0-2.0i)},
+    TestParsing{u8"-3.0-2.0*i", true, std::make_shared<Backend::Constant>(-3.0-2.0i)},
+    TestParsing{u8"-3-2*i", true, std::make_shared<Backend::Constant>(-3.0-2.0i)},
+    TestParsing{u8"-3-2*i-4+5i", true, std::make_shared<Backend::Constant>(-7.0+3.0i)},
+    TestParsing{u8"(-3)*(-2*i)*i*(-4)*(5i)", true, std::make_shared<Backend::Constant>(120.0i)},
+    TestParsing{u8"-3-2*i*z", true, std::make_shared<Backend::Sum>(std::vector<Backend::Sum::Summand> {Backend::Sum::Summand(Backend::Sum::Sign::Plus, std::make_shared<Backend::Constant>(-3.0)), Backend::Sum::Summand(Backend::Sum::Sign::Minus, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>{Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(2.0i)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::BaseZ>())}))})},
+    TestParsing{u8"(-2)*i*z", true, std::make_shared<Backend::Product>(std::vector<Backend::Product::Factor>{Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::Constant>(-2.0i)), Backend::Product::Factor(Backend::Product::Exponent::Positive, std::make_shared<Backend::BaseZ>())})},
+    // failure
+    TestParsing{u8"ii", false, nullptr}
 ));
 
-TEST_P(ConstantParsingTest, ShallParseConstantsCorrectly) //NOLINT (cert-err58-cpp, cppcoreguidelines-avoid-non-const-global-variables, cppcoreguidelines-owning-memory, fuchsia-statically-constructed-objects, misc-definitions-in-headers)
+TEST_P(InputParsingTest, ShallParseCorrectly) //NOLINT (cert-err58-cpp, cppcoreguidelines-avoid-non-const-global-variables, cppcoreguidelines-owning-memory, fuchsia-statically-constructed-objects, misc-definitions-in-headers)
 {
     // Arrange
-    TestConstantParsing tcp = GetParam();
+    TestParsing tcp = GetParam();
     Backend::Parser parser(tcp.optimize);
 
     // Act

@@ -64,7 +64,7 @@ namespace Backend\
         classname& operator=(const classname&) = delete;\
         classname& operator=(classname&&) = delete;\
         virtual int GetLevel() const { return 3; }\
-        virtual bool IsMonadic() const { return true; }\
+        virtual bool IsConstant() const { return false; }\
         virtual std::optional<complex> Evaluate(complex input) const\
         {\
             auto expressionResult = expression->Evaluate(input);\
@@ -121,7 +121,7 @@ namespace Backend\
         classname& operator=(const classname&) = delete;\
         classname& operator=(classname&&) = delete;\
         virtual int GetLevel() const { return 3; }\
-        virtual bool IsMonadic() const { return true; }\
+        virtual bool IsConstant() const { return false; }\
         virtual std::optional<complex> Evaluate(complex input) const\
         {\
             auto expressionResult = expression->Evaluate(input);\

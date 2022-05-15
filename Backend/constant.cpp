@@ -29,7 +29,7 @@ namespace Backend {
         return 0;
     }
 
-    bool Constant::IsMonadic() const
+    bool Constant::IsConstant() const
     {
         return true;
     }

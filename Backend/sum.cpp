@@ -18,6 +18,7 @@
 
 #include "sum.h"
 
+#include <algorithm>
 #include <utility>
 
 namespace Backend
@@ -38,9 +39,9 @@ namespace Backend
         return 1;
     }
 
-    bool Sum::IsMonadic() const
+    bool Sum::IsConstant() const
     {
-        return false;
+        return std::all_of(summands.begin(), summands.end(), [](const Summand summand){ return summand.expression->IsConstant(); });
     }
 
     std::optional<complex> Sum::Evaluate(complex input) const

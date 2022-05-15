@@ -48,7 +48,7 @@ namespace Backend {
         /*!
          * \reimp
          */
-        [[nodiscard]] bool IsMonadic() const override;
+        [[nodiscard]] bool IsConstant() const override;
 
         /*!
          * \reimp

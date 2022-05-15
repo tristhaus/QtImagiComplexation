@@ -50,10 +50,10 @@ namespace Backend
         [[nodiscard]] virtual int GetLevel() const = 0;
 
         /*!
-         * \brief Gets a value indicating whether the expression is monadic.
-         * \return A value indicating whether the expression is monadic.
+         * \brief Gets a value indicating whether the expression is constant.
+         * \return A value indicating whether the expression is constant.
          */
-        [[nodiscard]] virtual bool IsMonadic() const = 0;
+        [[nodiscard]] virtual bool IsConstant() const = 0;
 
         /*!
          * \brief Evaluates the expression using the \a input value as x-coordinate.

@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       plotting(false),
       ui(new Ui::MainWindow),
-      parser(Backend::Parser(false))
+      parser(Backend::Parser(true))
 {
     ui->setupUi(this);
 

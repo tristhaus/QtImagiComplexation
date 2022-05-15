@@ -17,6 +17,7 @@
  */
 
 #include "product.h"
+#include <algorithm>
 #include <cfenv>
 #include <cmath>
 #include <utility>
@@ -39,9 +40,9 @@ namespace Backend
         return 2;
     }
 
-    bool Product::IsMonadic() const
+    bool Product::IsConstant() const
     {
-        return false;
+        return std::all_of(factors.begin(), factors.end(), [](const Factor factor){ return factor.expression->IsConstant(); });
     }
 
     std::optional<complex> Product::Evaluate(complex input) const

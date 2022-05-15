@@ -41,7 +41,7 @@ namespace Backend
         return 3;
     }
 
-    bool Power::IsMonadic() const
+    bool Power::IsConstant() const
     {
         return false;
     }

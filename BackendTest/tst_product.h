@@ -21,12 +21,13 @@
 
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
+
 #include "ComplexMatcher.h"
 
-#include "../Backend/constant.h"
 #include "../Backend/basez.h"
-#include "../Backend/sum.h"
+#include "../Backend/constant.h"
 #include "../Backend/product.h"
+#include "../Backend/sum.h"
 
 TEST(BackendTest, ProductShallEvaluateCorrectly)
 {
@@ -83,6 +84,45 @@ TEST(BackendTest, ProductShallEvaluateUndefinedDivision)
 
     EXPECT_THAT(result3.value(), COMPLEX_NEAR(-1.0e9+0.0i));
     EXPECT_THAT(result5.value(), COMPLEX_NEAR(1.0e9i));
+}
+
+TEST(BackendTest, ProductShallDetermineConstantnessCorrectly)
+{
+    using namespace std::complex_literals;
+
+    // Arrange
+    std::shared_ptr<Backend::BaseZ> z = std::make_shared<Backend::BaseZ>();
+    std::shared_ptr<Backend::Constant> c1 = std::make_shared<Backend::Constant>(3.0+2.0i);
+    std::shared_ptr<Backend::Constant> c2 = std::make_shared<Backend::Constant>(2.0-1.0i);
+    std::shared_ptr<Backend::Constant> c3 = std::make_shared<Backend::Constant>(0.0);
+
+    std::vector<Backend::Product::Factor> factors1;
+    factors1.emplace_back(Backend::Product::Exponent::Positive, z);
+    factors1.emplace_back(Backend::Product::Exponent::Positive, c1);
+
+    std::vector<Backend::Product::Factor> factors2;
+    factors2.emplace_back(Backend::Product::Exponent::Positive, c1);
+    factors2.emplace_back(Backend::Product::Exponent::Positive, c2);
+
+    std::vector<Backend::Product::Factor> factors3;
+    factors3.emplace_back(Backend::Product::Exponent::Positive, c1);
+    factors3.emplace_back(Backend::Product::Exponent::Negative, c3);
+
+    auto product1 = std::make_shared<Backend::Product>(factors1);
+    auto product2 = std::make_shared<Backend::Product>(factors2);
+    auto product3 = std::make_shared<Backend::Product>(factors3);
+
+    // Act
+    auto result1 = product1->IsConstant();
+    auto result2 = product2->IsConstant();
+    auto result3 = product3->IsConstant();
+
+    // Assert
+    EXPECT_FALSE(result1);
+    EXPECT_TRUE(result2);
+    EXPECT_TRUE(result3);
+
+    EXPECT_FALSE(product3->Evaluate(0.0).has_value());
 }
 
 #endif // TST_PRODUCT_H

@@ -25,9 +25,9 @@ namespace Backend {
         return 0;
     }
 
-    bool BaseZ::IsMonadic() const
+    bool BaseZ::IsConstant() const
     {
-        return true;
+        return false;
     }
 
     std::optional<complex> BaseZ::Evaluate(complex input) const

@@ -35,10 +35,6 @@ namespace Backend {
     Parser::Parser(bool optimize)
         : optimize(optimize)
     {
-        if (optimize)
-        {
-            throw std::logic_error(u8"optimization not yet implemented");
-        }
     }
 
     bool Parser::Register(const std::string & name, CreateFunction createFunction)
@@ -496,7 +492,43 @@ namespace Backend {
             targetList.emplace_back(Sum::Summand(sign, expression));
         }
 
-        return std::make_shared<Sum>(targetList);
+        if (!optimize)
+        {
+            return std::make_shared<Sum>(targetList);
+        }
+
+        std::vector<Sum::Summand> constantList;
+        std::vector<Sum::Summand> variableList;
+
+        for (const auto & target : targetList) {
+            if(target.expression->IsConstant())
+            {
+                constantList.emplace_back(target);
+            }
+            else
+            {
+                variableList.emplace_back(target);
+            }
+        }
+
+        if (constantList.empty())
+        {
+            return std::make_shared<Sum>(variableList);
+        }
+
+        auto constantSum = std::make_shared<Sum>(constantList);
+        auto constantValue = constantSum->Evaluate(0.0).value();
+
+        auto replacementConstant = std::make_shared<Constant>(constantValue);
+
+        if(variableList.empty())
+        {
+            return replacementConstant;
+        }
+
+        variableList.insert(variableList.begin(), Sum::Summand(Sum::Sign::Plus, replacementConstant));
+
+        return std::make_shared<Sum>(variableList);
     }
 
     std::shared_ptr<Expression> Parser::ParseToProduct(std::vector<std::string> & tokens, std::vector<std::string> & ops) const
@@ -555,7 +587,43 @@ namespace Backend {
             targetList.emplace_back(Product::Factor(sign, expression));
         }
 
-        return std::make_shared<Product>(targetList);
+        if(!optimize)
+        {
+            return std::make_shared<Product>(targetList);
+        }
+
+        std::vector<Product::Factor> constantList;
+        std::vector<Product::Factor> variableList;
+
+        for (const auto & target : targetList) {
+            if(target.expression->IsConstant())
+            {
+                constantList.emplace_back(target);
+            }
+            else
+            {
+                variableList.emplace_back(target);
+            }
+        }
+
+        if (constantList.empty())
+        {
+            return std::make_shared<Product>(variableList);
+        }
+
+        auto constantFactor = std::make_shared<Product>(constantList);
+        auto constantValue = constantFactor->Evaluate(0.0).value();
+
+        auto replacementConstant = std::make_shared<Constant>(constantValue);
+
+        if(variableList.empty())
+        {
+            return replacementConstant;
+        }
+
+        variableList.insert(variableList.begin(), Product::Factor(Product::Exponent::Positive, replacementConstant));
+
+        return std::make_shared<Product>(variableList);
     }
 
     std::shared_ptr<Expression> Parser::ParseToPower(std::vector<std::string>& tokens, std::vector<std::string>& ops) const
