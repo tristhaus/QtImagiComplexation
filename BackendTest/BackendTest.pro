@@ -19,12 +19,13 @@
 include(../Backend/Backend.pri)
 
 # you may need to change this
-GOOGLETEST_DIR = D:\\VSProject\\googletest
+win32-msvc*:GOOGLETEST_DIR = D:/VSProject/googletest
+unix-g++:GOOGLETEST_DIR = /home/tristhaus/devel/googletest
 
 include(gtest_dependency.pri)
 
 TEMPLATE = app
-CONFIG += console c++11 thread
+CONFIG += console c++17 thread
 CONFIG -= app_bundle
 
 HEADERS += \

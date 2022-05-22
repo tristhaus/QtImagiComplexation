@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    QApplication::setWindowIcon(QIcon(":/icon.ico"));
+
     QTranslator translator;
     QLocale presentLocale = QLocale::system();
     auto uiLanguages = presentLocale.uiLanguages();

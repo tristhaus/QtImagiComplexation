@@ -17,6 +17,7 @@
  */
 
 #include <bitset>
+#include <stdexcept>
 
 #include "SubsetGenerator.h"
 
@@ -43,7 +44,7 @@ SubsetGenerator::SubsetGenerator(const std::string& input) :
 {
     if(input.length() > sizeof(unsigned long long)*8)
     {
-        throw std::exception("programmer mistake: SubsetGenerator was passed a too long input");
+        throw std::logic_error("programmer mistake: SubsetGenerator was passed a too long input");
     }
 }
 

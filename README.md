@@ -27,6 +27,8 @@ See Release tab for up-to-date information on what is supported. See Issues tab 
 
 I am currently not looking for contributors since this is primarily my hobby.
 
+Load the [QtImagiComplexationSuper.pro](QtImagiComplexationSuper.pro) into QtCreator >= 4.14.2, and configure the project. At least [QtImagiComplexation.pro](QtImagiComplexation/QtImagiComplexation.pro) should compile under Windows and Linux.
+
 In order to compile the tests, you need to define one of two preprocessor constants
  * `_SKIP_LONG_TEST` if you wish to skip the long-running tests
  * `_USE_LONG_TEST` if you wish to execute those tests

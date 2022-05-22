@@ -20,7 +20,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
-CONFIG += c++11
+CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -33,10 +33,21 @@ SOURCES += main.cpp
 
 RC_ICONS = icon.ico
 
+RESOURCES += \
+    $$PWD/icon.ico
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+win32-msvc*:{
+message("-- found MS VC --")
 QMAKE_CXXFLAGS_RELEASE+= /Zi
 QMAKE_LFLAGS_RELEASE+= /INCREMENTAL:NO /Debug /MAP
+}
+
+unix-g++:{
+message("-- found unix g++ --")
+QMAKE_CXXFLAGS_RELEASE+= -g
+}

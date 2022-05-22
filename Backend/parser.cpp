@@ -37,7 +37,7 @@ namespace Backend {
     {
         if (optimize)
         {
-            throw std::exception(u8"optimization not yet implemented");
+            throw std::logic_error(u8"optimization not yet implemented");
         }
     }
 

@@ -20,7 +20,7 @@ QT += testlib core gui concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
-CONFIG += qt warn_on depend_includepath testcase c++11
+CONFIG += qt warn_on depend_includepath testcase c++17
 
 TEMPLATE = app
 
