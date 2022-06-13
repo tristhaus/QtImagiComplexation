@@ -26,6 +26,7 @@
 
 #include "../Backend/expression.h"
 #include "../Backend/parser.h"
+#include "griddialog.h"
 
 class FrontendTest;
 
@@ -54,6 +55,7 @@ private:
     bool plotting;
     Ui::MainWindow * ui;
     Backend::Parser parser;
+    std::unique_ptr<Ui::GridDialog> gridDialog;
     std::unique_ptr<QMessageBox> aboutMessageBox;
     std::shared_ptr<Backend::Expression> expression;
 
@@ -71,6 +73,7 @@ private slots:
     void OnReturnKeyPressed();
     void OnSetPressed();
     void OnClearPressed();
+    void OnGridPressed();
     void OnAboutPressed();
 
 private:
@@ -79,7 +82,8 @@ private:
     void UpdateExpression();
     void ClearPlot();
     [[nodiscard]] QColor GenerateColor() const;
-    void AddArrow(double startX, double startY, double endX, double endY);
+    void PlotFrom(double inputX, double inputY);
+    void HandleGrid();
     void ShowAboutDialog();
 };
 

@@ -16,23 +16,9 @@
  *
  */
 
-#include <gtest/gtest.h>
+#ifndef DOUBLEHELPER_H
+#define DOUBLEHELPER_H
 
-#include "tst_basez.h"
-#include "tst_complexmatcher.h"
-#include "tst_constant.h"
-#include "tst_equality.h"
-#include "tst_functions.h"
-#include "tst_fundamental.h"
-#include "tst_parser.h"
-#include "tst_gridgenerator.h"
-#include "tst_power.h"
-#include "tst_product.h"
-#include "tst_subsetgenerator.h"
-#include "tst_sum.h"
+bool AreClose(double a, double b, double epsilon = 1e-6);
 
-int main(int argc, char *argv[])
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
+#endif // DOUBLEHELPER_H

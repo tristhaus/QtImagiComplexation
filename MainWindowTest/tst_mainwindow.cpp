@@ -52,6 +52,7 @@ private slots:
     static void ClearButtonShallClearGraph();
     static void ParseabilityShallBeCorrectlyIndicated();
     static void ReturnKeyOnParseableInputShallActivatePlotting();
+    void GridAdditionShallAddArrows();
 #endif // _USE_LONG_TEST
 };
 
@@ -75,6 +76,7 @@ void FrontendTest::ConstructionShallWorkCompletely() //NOLINT(google-readability
         QVERIFY2(mw.ui->funcLineEdit, qPrintable(QString::fromUtf8(u8"not created function line edit")));
         QVERIFY2(mw.ui->funcSetButton, qPrintable(QString::fromUtf8(u8"not created function set button")));
         QVERIFY2(mw.ui->funcClearButton, qPrintable(QString::fromUtf8(u8"not created function clear button")));
+        QVERIFY2(mw.ui->gridButton, qPrintable(QString::fromUtf8(u8"not created grid button")));
         QVERIFY2(mw.ui->aboutButton, qPrintable(QString::fromUtf8(u8"not created about button")));
         QVERIFY2(mw.ui->plot, qPrintable(QString::fromUtf8(u8"not created plot")));
 
@@ -129,23 +131,27 @@ void FrontendTest::WindowShallBeStateful()
 
     // Act
     QTest::mouseClick(mw.ui->funcSetButton, Qt::LeftButton);
-    bool isDisabledAfterSet = !mw.ui->funcLineEdit->isEnabled();
+    bool funcIsDisabledAfterSet = !mw.ui->funcLineEdit->isEnabled();
+    bool gridIsEnabledAfterSet = mw.ui->gridButton->isEnabled();
 
     QTest::mouseClick(mw.ui->plot, Qt::LeftButton);
     QTest::mouseClick(mw.ui->plot, Qt::LeftButton);
     bool graphHasTwoItems = mw.ui->plot->itemCount() == 2;
 
     QTest::mouseClick(mw.ui->funcClearButton, Qt::LeftButton);
-    bool isEnabledAfterClear = mw.ui->funcLineEdit->isEnabled();
+    bool funcIsEnabledAfterClear = mw.ui->funcLineEdit->isEnabled();
+    bool gridIsDisabledAfterClear = !mw.ui->gridButton->isEnabled();
     bool graphHasNoItem = mw.ui->plot->itemCount() == 0;
 
     QTest::mouseClick(mw.ui->plot, Qt::LeftButton);
     bool graphStillHasNoItem = mw.ui->plot->itemCount() == 0;
 
     // Assert
-    QVERIFY2(isDisabledAfterSet, qPrintable(QString::fromUtf8(u8"line edit enabled after set")));
+    QVERIFY2(funcIsDisabledAfterSet, qPrintable(QString::fromUtf8(u8"line edit enabled after set")));
+    QVERIFY2(gridIsEnabledAfterSet, qPrintable(QString::fromUtf8(u8"grid button not enabled after set")));
     QVERIFY2(graphHasTwoItems, qPrintable(QString::fromUtf8(u8"graph does not have expected items")));
-    QVERIFY2(isEnabledAfterClear, qPrintable(QString::fromUtf8(u8"line edit not enabled after clear")));
+    QVERIFY2(funcIsEnabledAfterClear, qPrintable(QString::fromUtf8(u8"line edit not enabled after clear")));
+    QVERIFY2(gridIsDisabledAfterClear, qPrintable(QString::fromUtf8(u8"grid button enabled after clear")));
     QVERIFY2(graphHasNoItem, qPrintable(QString::fromUtf8(u8"graph has item after clear")));
     QVERIFY2(graphStillHasNoItem, qPrintable(QString::fromUtf8(u8"graph has item after clicking")));
 }
@@ -248,6 +254,42 @@ void FrontendTest::ReturnKeyOnParseableInputShallActivatePlotting()
 
     // Assert
     QVERIFY2(mw.plotting, qPrintable(QString::fromUtf8(u8"not plotting when it should be")));
+}
+
+void FrontendTest::GridAdditionShallAddArrows()
+{
+    // Arrange
+    MainWindow mw;
+    mw.ui->funcLineEdit->setText(QString("z * i"));
+    QTest::mouseClick(mw.ui->funcSetButton, Qt::LeftButton);
+
+    // spy needed such that events actually happen
+    QSignalSpy spyGridButton(mw.ui->gridButton, &QAbstractButton::pressed);
+
+    // Act
+    int preCount = mw.ui->plot->itemCount();
+
+    bool gridDialogFound = false;
+    QTimer::singleShot(500, this, [&]()
+    {
+        gridDialogFound = mw.gridDialog != nullptr;
+        if(gridDialogFound)
+        {
+            QTest::mouseClick(mw.gridDialog->squareGridAcceptButton, Qt::LeftButton);
+        }
+    });
+
+    QTest::mouseClick(mw.ui->gridButton, Qt::LeftButton);
+
+    Sleep(1000);
+
+    int postCount = mw.ui->plot->itemCount();
+
+    // Assert
+    QVERIFY2(gridDialogFound, qPrintable(QString::fromUtf8(u8"grid dialog not found")));
+    QVERIFY2(mw.gridDialog == nullptr, qPrintable(QString::fromUtf8(u8"grid dialog still reachable")));
+    QVERIFY2(preCount == 0, qPrintable(QString::fromUtf8(u8"preCount not equal 0")));
+    QVERIFY2(postCount > 0, qPrintable(QString::fromUtf8(u8"postCount not greater 0")));
 }
 
 #endif // _USE_LONG_TEST

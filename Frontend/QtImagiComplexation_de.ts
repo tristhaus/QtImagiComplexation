@@ -32,5 +32,48 @@
         <source>About ... </source>
         <translation>Über ... </translation>
     </message>
+    <message>
+        <source>Grid ... </source>
+        <translation>Gitter ... </translation>
+    </message>
+</context>
+<context>
+    <name>Ui::GridDialog</name>
+    <message>
+        <source>Add grid</source>
+        <translation>Gitter hinzufügen</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation>Abstand</translation>
+    </message>
+    <message>
+        <source>Radial increment</source>
+        <translation>Radius-Inkrement</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation>Winkel</translation>
+    </message>
+    <message>
+        <source>Angular grid with approximate distance</source>
+        <translation>Radiales Gitter mit ungefährer Distanz</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>Hinzufügen</translation>
+    </message>
+    <message>
+        <source>Square grid</source>
+        <translation>Quadratisches Gitter</translation>
+    </message>
+    <message>
+        <source>Angular grid with fixed angle</source>
+        <translation>Radiales Gitter mit festem Winkel</translation>
+    </message>
 </context>
 </TS>

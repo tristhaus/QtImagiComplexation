@@ -62,6 +62,7 @@ private:
     QLineEdit * funcLineEdit{};
     QPushButton *funcSetButton{};
     QPushButton *funcClearButton{};
+    QPushButton *gridButton{};
     QPushButton *aboutButton{};
 
     QCustomPlot * plot{};
@@ -109,8 +110,12 @@ public:
         funcClearButton->setObjectName(QString::fromUtf8(u8"funcClearButton"));
         functionLayout->addWidget(funcClearButton);
 
+        gridButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory)
+        gridButton->setObjectName(QString::fromUtf8(u8"gridButton"));
+        functionLayout->addWidget(gridButton);
+
         aboutButton = new QPushButton(functionFrame); //NOLINT(cppcoreguidelines-owning-memory)
-        aboutButton->setObjectName(QString::fromUtf8(u8"funcAboutButton"));
+        aboutButton->setObjectName(QString::fromUtf8(u8"aboutButton"));
         functionLayout->addWidget(aboutButton);
 
         mainLayout->addWidget(functionFrame);
@@ -131,6 +136,7 @@ public:
         funcLabel->setText(QCoreApplication::translate("MainWindow", "f(z) =", nullptr));
         funcSetButton->setText(QCoreApplication::translate("MainWindow", "Set", nullptr));
         funcClearButton->setText(QCoreApplication::translate("MainWindow", "Clear", nullptr));
+        gridButton->setText(QCoreApplication::translate("MainWindow", "Grid ... ", nullptr));
         aboutButton->setText(QCoreApplication::translate("MainWindow", "About ... ", nullptr));
     } // retranslateUi
 

@@ -32,5 +32,48 @@
         <source>About ... </source>
         <translation>About ... </translation>
     </message>
+    <message>
+        <source>Grid ... </source>
+        <translation>Grid ... </translation>
+    </message>
+</context>
+<context>
+    <name>Ui::GridDialog</name>
+    <message>
+        <source>Add grid</source>
+        <translation>Add grid</translation>
+    </message>
+    <message>
+        <source>Square grid</source>
+        <translation>Square grid</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation>Distance</translation>
+    </message>
+    <message>
+        <source>Angular grid with fixed angle</source>
+        <translation>Radial grid with fixed angle</translation>
+    </message>
+    <message>
+        <source>Radial increment</source>
+        <translation>Radial increment</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation>Angle</translation>
+    </message>
+    <message>
+        <source>Angular grid with approximate distance</source>
+        <translation>Radial grid with approximate distance</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>Add</translation>
+    </message>
 </context>
 </TS>

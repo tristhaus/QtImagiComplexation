@@ -20,5 +20,6 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     QtImagiComplexation \
-    MainWindowTest \
-    BackendTest
+    BackendTest \
+    GridDialogTest \
+    MainWindowTest

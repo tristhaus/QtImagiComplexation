@@ -53,6 +53,7 @@ namespace Backend {
     public:
         /*!
          * \brief Initializes a new instance.
+         * \param optimize Flag indicating whether to optimize away some constant terms
          */
         explicit Parser(bool optimize);
 

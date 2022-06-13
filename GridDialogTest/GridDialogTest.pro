@@ -16,25 +16,19 @@
 #
 #
 
-INCLUDEPATH += $$PWD\..\Include
+QT += testlib core gui concurrent
 
-HEADERS += \
-    $$PWD/expression.h \
-    $$PWD/basez.h \
-    $$PWD/constant.h \
-    $$PWD/functions.h \
-    $$PWD/gridgenerator.h \
-    $$PWD/parser.h \
-    $$PWD/power.h \
-    $$PWD/product.h \
-    $$PWD/sum.h
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
-SOURCES += \
-    $$PWD/basez.cpp \
-    $$PWD/constant.cpp \
-    $$PWD/functions.cpp \
-    $$PWD/gridgenerator.cpp \
-    $$PWD/parser.cpp \
-    $$PWD/power.cpp \
-    $$PWD/product.cpp \
-    $$PWD/sum.cpp
+CONFIG += qt warn_on depend_includepath testcase c++17
+
+TEMPLATE = app
+
+# You can make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+include(../Frontend/Frontend.pri)
+include(../Backend/Backend.pri)
+
+SOURCES +=  tst_griddialog.cpp

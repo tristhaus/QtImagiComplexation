@@ -17,10 +17,12 @@
 #
 
 SOURCES += \
+    $$PWD/griddialog.cpp \
     $$PWD/mainwindow.cpp \
     $$PWD/qcustomplot.cpp
 
 HEADERS += \
+    $$PWD/griddialog.h \
     $$PWD/mainwindow.h \
     $$PWD/mainwindow_ui.h \
     $$PWD/qcustomplot.h

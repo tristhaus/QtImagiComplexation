@@ -31,12 +31,14 @@ CONFIG -= app_bundle
 HEADERS += \
         ComplexMatcher.h \
         SubsetGenerator.h \
+        doublehelper.h \
         tst_basez.h \
         tst_complexmatcher.h \
         tst_constant.h \
         tst_functions.h \
         tst_fundamental.h \
         tst_equality.h \
+        tst_gridgenerator.h \
         tst_parser.h \
         tst_power.h \
         tst_product.h \
@@ -45,4 +47,5 @@ HEADERS += \
 
 SOURCES += \
         SubsetGenerator.cpp \
+        doublehelper.cpp \
         main.cpp
